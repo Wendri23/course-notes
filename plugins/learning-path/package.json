@@ -1,26 +1,38 @@
 {
   "name": "learning-path",
   "version": "1.0.0",
-  "description": "Course notes: chapter timeline on course pages, previous/next chapter on chapter pages",
+  "description": "Course notes: chapters rows, concepts in a chapter, previous/next chapter, related concepts, mentioned in, topic lists",
   "type": "module",
   "private": true,
   "exports": {
-    ".": { "import": "./dist/index.js" },
-    "./components": { "import": "./dist/components/index.js" },
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "import": "./dist/components/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
-  "peerDependencies": { "preact": "^10.0.0" },
+  "peerDependencies": {
+    "preact": "^10.0.0"
+  },
   "quartz": {
     "name": "learning-path",
     "displayName": "Learning Path",
-    "category": ["component"],
+    "category": [
+      "component"
+    ],
     "version": "1.0.0",
     "quartzVersion": ">=5.1.0",
     "defaultEnabled": true,
     "defaultOptions": {},
     "components": {
-      "LearningPath": { "displayName": "Learning Path", "defaultPosition": "beforeBody", "defaultPriority": 40 }
+      "LearningPath": {
+        "displayName": "Learning Path",
+        "defaultPosition": "afterBody",
+        "defaultPriority": 10
+      }
     }
   }
 }

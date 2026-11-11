@@ -1,0 +1,38 @@
+{
+  "name": "course-back",
+  "version": "1.0.0",
+  "description": "Course notes: back link to the real parent page",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "import": "./dist/components/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "peerDependencies": {
+    "preact": "^10.0.0"
+  },
+  "quartz": {
+    "name": "course-back",
+    "displayName": "Course Back Link",
+    "category": [
+      "component"
+    ],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.1.0",
+    "defaultEnabled": true,
+    "defaultOptions": {},
+    "components": {
+      "BackLink": {
+        "displayName": "Course Back Link",
+        "defaultPosition": "right",
+        "defaultPriority": 90
+      }
+    }
+  }
+}

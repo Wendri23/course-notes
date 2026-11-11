@@ -1,0 +1,38 @@
+{
+  "name": "course-footer",
+  "version": "1.0.0",
+  "description": "Course notes: footer with credit and light/dark switch",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "import": "./dist/components/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "peerDependencies": {
+    "preact": "^10.0.0"
+  },
+  "quartz": {
+    "name": "course-footer",
+    "displayName": "Course Footer",
+    "category": [
+      "component"
+    ],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.1.0",
+    "defaultEnabled": true,
+    "defaultOptions": {},
+    "components": {
+      "SiteFooter": {
+        "displayName": "Course Footer",
+        "defaultPosition": "footer",
+        "defaultPriority": 50
+      }
+    }
+  }
+}

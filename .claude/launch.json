@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "quartz",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["quartz", "build", "--serve", "--port", "8091", "--wsPort", "3091"],
+      "port": 8091,
+      "autoPort": false
+    }
+  ]
+}

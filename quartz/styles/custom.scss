@@ -1,211 +1,389 @@
 @use "./variables.scss" as *;
 
 // ─────────────────────────────────────────────────────────────
-// Course notes — "study" theme
-// Each course has an accent colour (frontmatter `color` on its index.md).
-// The CourseBadge component sets --course-accent for the current page;
-// everything below derives from it. `html:root` beats Quartz's `:root` vars.
+// Course notes — design system v1 (ui-handoff/tokens.css)
+// Black & white + one vermillon accent, used only for: progress fill, the dot before the last
+// opened note, the active TOC heading, hover underline / chip border, keyboard focus, the
+// current graph node. Never for text, backgrounds, headings, buttons or ✓/○ marks.
+// Quartz palette (quartz.config.yaml): light = bg, lightgray = line, gray = muted,
+// darkgray / dark = ink, secondary = ink (links), tertiary = accent.
 // ─────────────────────────────────────────────────────────────
 
 html:root {
-  --default-accent: #0f766e;
-  --course-accent: var(--default-accent);
-  --accent: var(--course-accent);
-  --accent-soft: color-mix(in oklab, var(--accent) 10%, var(--light));
-  --accent-line: color-mix(in oklab, var(--accent) 28%, var(--light));
-  --secondary: var(--accent);
-  --tertiary: color-mix(in oklab, var(--accent) 70%, #c2410c);
-  --highlight: color-mix(in oklab, var(--accent) 8%, transparent);
-  --card: #ffffff;
-  --shadow: 0 1px 2px rgb(28 25 23 / 0.04), 0 4px 16px rgb(28 25 23 / 0.06);
-  --shadow-hover: 0 2px 4px rgb(28 25 23 / 0.06), 0 12px 32px rgb(28 25 23 / 0.1);
-  --radius: 14px;
+  --bg: var(--light);
+  --ink: var(--dark);
+  --ink2: #333333;
+  --muted: var(--gray);
+  --ctl: #d4d4d4;
+  --line: var(--lightgray);
+  --edge: #bbbbbb;
+  --accent: var(--tertiary);
 }
 
 html:root[saved-theme="dark"] {
-  --accent: color-mix(in oklab, var(--course-accent) 55%, #ffffff);
-  --accent-soft: color-mix(in oklab, var(--accent) 14%, var(--light));
-  --accent-line: color-mix(in oklab, var(--accent) 35%, var(--light));
-  --secondary: var(--accent);
-  --tertiary: color-mix(in oklab, var(--accent) 65%, #fb923c);
-  --highlight: color-mix(in oklab, var(--accent) 12%, transparent);
-  --card: #1a1d22;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
-  --shadow-hover: 0 2px 4px rgb(0 0 0 / 0.35), 0 12px 32px rgb(0 0 0 / 0.4);
+  --ink2: #cfcfcf;
+  --ctl: #3d3d3d;
+  --edge: #555555;
 }
 
-// ── Typography ────────────────────────────────────────────────
+// ── Base ──────────────────────────────────────────────────────
 body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.55 var(--bodyFont);
+  font-feature-settings: "cv11";
   -webkit-font-smoothing: antialiased;
 }
 
-article {
-  line-height: 1.7;
-  font-size: 1.02rem;
+a,
+a.internal {
+  color: var(--ink);
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-weight: inherit;
+  text-decoration: none;
+}
 
-  p,
-  li {
-    color: var(--darkgray);
+a:hover,
+a.internal:hover {
+  color: var(--ink);
+  text-decoration-line: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--textHighlight);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+// ── Frame: head / main + sticky rail / footer ─────────────────
+.page[data-frame="course"] {
+  max-width: none;
+  margin: 0;
+
+  > #quartz-body {
+    display: block;
+    padding: 0;
   }
 }
 
-h1,
-h2,
-h3,
-h4,
-.page-title,
-.article-title {
+.cn-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 32px;
+  box-sizing: border-box;
+}
+
+.cn-wrap .page-header {
+  margin: 0 0 48px;
+}
+
+.cn-layout {
+  display: flex;
+  gap: 64px;
+  align-items: flex-start;
+}
+
+.cn-main {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.cn-rail {
+  flex: 0 0 280px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  // sticky, never its own scroll box: a rail taller than the screen scrolls with the page
+  // and sticks once its bottom is reached (top set by the client script)
+  position: sticky;
+  top: var(--rail-top, 24px);
+  overflow: visible;
+}
+
+.cn-rail:empty {
+  display: none;
+}
+
+// Home: title + intro beside the search (static, not sticky)
+.cn-home-top {
+  margin-bottom: 48px;
+  .cn-rail {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  .page-header {
+    margin: 0;
+  }
+  .h1 {
+    margin-top: 0;
+  }
+  article {
+    max-width: 68ch;
+  }
+}
+
+// Pages without a rail (board): glossary, topic, tags index.
+// The search stays in the DOM so Ctrl K keeps working; only its trigger is hidden.
+.cn-wrap:is(
+  [data-kind="glossary"],
+  [data-kind="topic"],
+  [data-kind="tags"],
+  [data-kind="concepts"]
+) {
+  .cn-rail .search > .search-button {
+    display: none;
+  }
+}
+.cn-wrap:is([data-kind="glossary"], [data-kind="topic"], [data-kind="tags"]) {
+  .cn-rail {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: visible;
+    flex: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cn-layout {
+    display: block;
+  }
+}
+
+// Course page: the TOC of the index note is not in the board
+.cn-wrap[data-kind="course"] .cn-rail .toc {
+  display: none;
+}
+
+// ── Type ──────────────────────────────────────────────────────
+.h1,
+h1.article-title {
   font-family: var(--headerFont);
-  font-optical-sizing: auto;
-  letter-spacing: -0.01em;
-  color: var(--dark);
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+  margin: 8px 0;
+  color: var(--ink);
 }
 
-.article-title {
-  font-weight: 700;
-  font-size: 2.3rem;
-  line-height: 1.15;
+.muted {
+  color: var(--muted);
 }
 
-article h2 {
-  margin-top: 2.2rem;
-  padding-bottom: 0.3rem;
-  border-bottom: 1px solid var(--lightgray);
-}
-
-article h2::before {
-  content: "";
-  display: inline-block;
-  width: 0.35em;
-  height: 0.9em;
-  margin-right: 0.5em;
-  border-radius: 3px;
-  background: var(--accent);
-  vertical-align: -0.05em;
-}
-
-.page-title {
-  font-size: 1.6rem;
+.crumb {
+  font-size: 13px;
+  color: var(--muted);
   a {
-    color: var(--dark);
+    color: var(--muted);
+  }
+}
+
+.meta {
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.cn-intro {
+  max-width: 68ch;
+  color: var(--ink);
+  margin: 12px 0 0;
+}
+
+.lbl {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.sec {
+  margin-bottom: 48px;
+}
+.sec:last-child {
+  margin-bottom: 0;
+}
+
+// ── Links: underlined in text, plain in lists, rows, chips ────
+.crumb a,
+.meta a,
+.links a,
+a.back,
+.cn-rail .toc a,
+article a,
+.u {
+  text-decoration-line: underline;
+  text-decoration-color: var(--muted);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.crumb a:hover,
+.meta a:hover,
+.links a:hover,
+a.back:hover,
+.cn-rail .toc a:hover,
+article a:hover,
+.u:hover {
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+}
+
+// ── The note, rendered as-is: 68ch, 17px / 1.65 ──────────────
+article {
+  max-width: 68ch;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink);
+
+  p,
+  li {
+    color: var(--ink);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--bodyFont);
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+  }
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-top: 40px;
+  }
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  a.internal.broken {
+    color: var(--muted);
+    text-decoration-style: dashed;
+  }
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  // ✓ / ○ after links to chapters and concepts (a style, not a block)
+  a.cn-lk::after {
+    content: "\00a0○";
+    display: inline-block;
+    font-size: 0.85em;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  a.cn-lk.cn-lk-o::after {
+    content: "\00a0✓";
   }
 }
 
 strong {
-  color: var(--dark);
-}
-
-// ── Links ─────────────────────────────────────────────────────
-a.internal:not(.tag-link) {
-  background-color: transparent;
-  padding: 0;
-}
-
-article a.internal:not(.tag-link) {
-  color: var(--accent);
-  background: transparent;
-  text-decoration: underline;
-  text-decoration-color: var(--accent-line);
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 3px;
-  transition:
-    text-decoration-color 0.15s,
-    color 0.15s;
-
-  &:hover {
-    color: var(--tertiary);
-    text-decoration-color: currentColor;
-  }
-
-  &.broken {
-    opacity: 0.6;
-    text-decoration-style: dashed;
-  }
+  color: var(--ink);
 }
 
 a.internal.tag-link {
-  background: var(--accent-soft);
+  border: 1px solid var(--ctl);
   border-radius: 999px;
-  padding: 0.1rem 0.6rem;
+  padding: 0 8px;
+  font-size: 13px;
+  text-decoration: none;
+  &:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+  }
 }
 
-// ── Tables ────────────────────────────────────────────────────
+// tables, code, quotes: 1px, square
 .table-container {
-  border-radius: var(--radius);
-  border: 1px solid var(--lightgray);
-  background: var(--card);
-  box-shadow: var(--shadow);
   overflow-x: auto;
-  margin: 1.4rem 0;
-
+  margin: 24px 0;
   > table {
     margin: 0;
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.93rem;
+    font-size: 15px;
   }
 }
 
 article table {
   th {
     text-align: left;
-    font-weight: 650;
-    color: var(--dark);
-    background: var(--accent-soft);
-    border-bottom: 1px solid var(--accent-line);
-    padding: 0.6rem 0.9rem;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--ink);
+    padding: 8px 12px 8px 0;
   }
-
   td {
-    padding: 0.55rem 0.9rem;
-    border-bottom: 1px solid var(--lightgray);
+    padding: 8px 12px 8px 0;
+    border-bottom: 1px solid var(--line);
     vertical-align: top;
   }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  tbody tr:nth-child(even) {
-    background: color-mix(in oklab, var(--lightgray) 30%, transparent);
-  }
-
   tbody tr:hover {
-    background: var(--highlight);
+    background: none;
   }
 }
 
-// ── Code ──────────────────────────────────────────────────────
 pre {
-  border-radius: 12px;
-  border: 1px solid var(--lightgray);
+  border-radius: 0;
+  border: 1px solid var(--line);
 }
 
 p > code,
 li > code,
 td > code {
-  background: var(--accent-soft);
-  color: var(--dark);
-  border-radius: 5px;
-  padding: 0.1em 0.35em;
-  font-size: 0.88em;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--ink);
+  padding: 0 0.3em;
+  font-size: 0.86em;
 }
 
-// ── Mermaid diagrams (centered, framed) ───────────────────────
 pre:has(> code.mermaid) {
-  background: var(--card);
-  box-shadow: var(--shadow);
-  border-radius: var(--radius);
-  padding: 1.2rem 0.75rem;
+  background: transparent;
+  padding: 16px;
 }
-
 code.mermaid {
   display: flex !important;
   justify-content: center;
   align-items: center;
   width: 100%;
   background: transparent !important;
-
   svg {
     display: block;
     margin: 0 auto;
@@ -214,55 +392,919 @@ code.mermaid {
   }
 }
 
-article img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 10px;
-}
-
-// ── Quotes & callouts ─────────────────────────────────────────
 blockquote:not(.callout) {
-  border-left: 3px solid var(--accent);
-  background: var(--accent-soft);
-  border-radius: 0 10px 10px 0;
-  padding: 0.4rem 1rem;
+  border-left: 1px solid var(--ink);
+  background: none;
+  border-radius: 0;
+  padding: 0 0 0 16px;
   margin-left: 0;
+  color: var(--ink);
 }
 
 .callout {
-  border-radius: 12px;
+  border-radius: 0;
 }
 
-// ── Sidebars ──────────────────────────────────────────────────
-.explorer li > a.active {
-  color: var(--accent);
-  font-weight: 600;
+// ── Components ────────────────────────────────────────────────
+.rows {
+  border-top: 1px solid var(--line);
 }
 
-hr {
-  border-color: var(--lightgray);
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  strong {
+    font-weight: 600;
+  }
+  small {
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+}
+a.row:hover {
+  text-decoration: none;
+  strong {
+    text-decoration-line: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
 }
 
-::selection {
-  background: color-mix(in oklab, var(--accent) 25%, transparent);
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-// Course pages and the home page don't need the properties panel
-body:has(.course-ctx-empty) .note-properties {
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--ctl);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: transparent;
+  text-decoration: none;
+}
+a.chip:hover,
+button.chip:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+.chip.muted {
+  color: var(--muted);
+}
+.chip[hidden] {
   display: none;
 }
 
-// ── Shared card style for the custom plugins ──────────────────
-.cn-card {
-  background: var(--card);
-  border: 1px solid var(--lightgray);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+  flex: none;
 }
 
-@media all and ($mobile) {
-  .article-title {
-    font-size: 1.8rem;
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.back {
+  display: block;
+  font-size: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 16px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 14px;
+  box-sizing: border-box;
+  text-decoration: none;
+  &:hover {
+    background: var(--ink2);
+    color: var(--bg);
+    text-decoration: none;
   }
+  &[hidden] {
+    display: none;
+  }
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--ctl);
+  border-radius: 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--muted);
+  background: var(--bg);
+  box-sizing: border-box;
+  input {
+    border: 0;
+    font: inherit;
+    color: var(--ink);
+    flex: 1;
+    min-width: 0;
+    outline: none;
+    background: transparent;
+  }
+  input:focus-visible {
+    outline: none;
+  }
+}
+.field:focus-within,
+select.field:focus {
+  border-color: var(--ink);
+  outline: none;
+}
+html body select.field,
+html body select.field option {
+  font-family: var(--bodyFont);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* customizable select: the dropdown is drawn in the page, so it uses the site font */
+@supports (appearance: base-select) {
+  html body select.field {
+    appearance: base-select;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 300px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--ctl);
+    border-radius: 0;
+    cursor: pointer;
+  }
+  html body select.field::picker-icon {
+    color: var(--muted);
+    transition: rotate 0.15s;
+  }
+  html body select.field:open::picker-icon {
+    rotate: 180deg;
+  }
+  html body select.field::picker(select) {
+    appearance: base-select;
+    margin-top: 6px;
+    padding: 4px;
+    min-width: anchor-size(width);
+    border: 1px solid var(--ctl);
+    border-radius: 0;
+    background: var(--bg);
+    color: var(--ink);
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.3);
+    font-family: var(--bodyFont);
+  }
+  html body select.field option {
+    padding: 7px 10px;
+    border-radius: 0;
+    font: 400 14px var(--bodyFont);
+    cursor: pointer;
+  }
+  html body select.field option::checkmark {
+    display: none;
+  }
+  html body select.field option:hover,
+  html body select.field option:focus-visible {
+    background: var(--line);
+    outline: none;
+  }
+  html body select.field option:checked {
+    font-weight: 600;
+  }
+}
+
+/* few results after a filter: one column, anchored left */
+html body .cols.cn-few {
+  columns: 1;
+}
+
+.kbd {
+  font: 11px var(--codeFont);
+  border: 1px solid var(--ctl);
+  padding: 1px 5px;
+  color: var(--muted);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.check {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+  min-height: 40px;
+  cursor: pointer;
+  input {
+    accent-color: var(--ink);
+  }
+}
+
+.bar {
+  height: 4px;
+  background: var(--line);
+  > i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+  }
+}
+
+.cols {
+  columns: 3 220px;
+  column-gap: 32px;
+  font-size: 14px;
+  line-height: 2;
+  &.c4 {
+    columns: 4 200px;
+  }
+  a {
+    display: block;
+    break-inside: avoid;
+    text-decoration: none;
+  }
+  a[hidden],
+  .L[hidden] {
+    display: none;
+  }
+}
+
+.mk {
+  font-style: normal;
+  color: var(--muted);
+  display: inline-block;
+  width: 20px;
+}
+
+.L {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-top: 16px;
+  border-bottom: 1px solid var(--line);
+  break-after: avoid;
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.pn {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  font-size: 14px;
+  a {
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: none;
+    strong {
+      text-decoration-line: underline;
+      text-decoration-color: var(--accent);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+  }
+  small {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  strong {
+    font-weight: 600;
+  }
+}
+
+.cn-progress-line {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+// main column sections under the note
+.cn-main .page-footer {
+  margin-top: 48px;
+  &:empty {
+    display: none;
+  }
+}
+.cn-wrap:is([data-kind="chapter"], [data-kind="concept"]) .cn-sections {
+  max-width: 680px;
+}
+.cn-rail-top {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.cn-wrap[data-kind="course"] .cn-main > .page-footer {
+  margin: 0 0 48px;
+}
+
+// ── Rail: search (Ctrl K) ─────────────────────────────────────
+.cn-rail .search,
+.cn-home-top .search {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}
+
+.search > .search-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  margin: 0;
+  border: 1px solid var(--ctl);
+  border-radius: 0;
+  background: var(--bg);
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+  cursor: text;
+  svg {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    stroke: currentColor;
+    fill: none;
+  }
+  p {
+    flex: 1;
+    margin: 0;
+    text-align: left;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  &::after {
+    content: "Ctrl K";
+    font: 11px var(--codeFont);
+    border: 1px solid var(--ctl);
+    padding: 1px 5px;
+    color: var(--muted);
+  }
+  &:hover {
+    border-color: var(--ink);
+  }
+}
+
+// Search dialog (Ctrl K): one square panel, input on top, result rows below
+.search > .search-container {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.search > .search-container > .search-space {
+  width: min(720px, 92vw);
+  margin: 12vh auto 0;
+  padding: 0;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  box-shadow: none;
+  > input.search-bar {
+    box-sizing: border-box;
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px var(--bodyFont);
+    box-shadow: none;
+    outline: none;
+    &:focus,
+    &:focus-visible {
+      outline: none;
+      border-color: var(--line);
+      box-shadow: none;
+    }
+  }
+  .ghost-text {
+    font: 16px var(--bodyFont);
+  }
+  > .search-layout {
+    display: none;
+    border: 0;
+    border-radius: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+    background: var(--bg);
+    &.display-results {
+      display: block;
+    }
+    .results-container {
+      display: block;
+      width: 100%;
+      border: 0;
+      max-height: none;
+      overflow: visible;
+    }
+  }
+  .result-card {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 16px;
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink);
+    text-decoration: none;
+    &:last-child {
+      border-bottom: 0;
+    }
+    &:hover,
+    &.focus {
+      background: color-mix(in srgb, var(--ink) 5%, var(--bg));
+      color: var(--ink);
+      text-decoration: none;
+    }
+    &:hover .card-title,
+    &.focus .card-title {
+      text-decoration: underline;
+      text-decoration-color: var(--accent);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+    .card-title {
+      font: 600 15px/1.4 var(--bodyFont);
+      color: var(--ink);
+      margin: 0;
+    }
+    .card-description {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin: 4px 0 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .highlight {
+      background: none;
+      color: inherit;
+      font-weight: 700;
+      padding: 0;
+      border-radius: 0;
+    }
+    ul.tags {
+      display: none;
+    }
+  }
+}
+html body .search .result-card:hover,
+html body .search .result-card:hover .card-description {
+  color: var(--ink);
+}
+html body .search .result-card:hover .card-description {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+// ── Rail: "On this page" (Quartz TOC) ─────────────────────────
+.cn-rail > * {
+  flex-shrink: 0;
+}
+.cn-rail .toc {
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  max-height: none;
+  .toc-content.gradient-active {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+  .toc-header {
+    pointer-events: none;
+    padding: 0;
+    margin: 0 0 12px;
+    background: none;
+    border: 0;
+    h3 {
+      font-size: 0;
+      margin: 0;
+      &::after {
+        content: "On this page";
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+    }
+    svg {
+      display: none;
+    }
+  }
+  .toc-content {
+    border-left: 1px solid var(--line);
+    padding-left: 14px;
+    max-height: none;
+    overflow: visible;
+    > li {
+      margin: 0 0 10px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    > li > a {
+      color: var(--ink);
+      opacity: 1;
+      text-decoration: none;
+      &.in-view {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      &:hover {
+        text-decoration: underline;
+        text-decoration-color: var(--accent);
+        text-decoration-thickness: 2px;
+      }
+    }
+    .depth-1 {
+      padding-left: 12px;
+    }
+    .depth-2 {
+      padding-left: 24px;
+    }
+    .overflow-end {
+      display: none;
+    }
+  }
+  &.collapsed .toc-content,
+  .toc-content.collapsed {
+    max-height: none;
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+// ── Rail: graph (expand button top-right) ─────────────────────
+.gwrap {
+  position: relative;
+}
+.gx {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--bg);
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  &:hover {
+    color: var(--ink);
+    border-color: var(--ctl);
+  }
+}
+.gpop {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  padding: 24px;
+}
+.gpop-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+// ── Footer: credit left, theme switch right ───────────────────
+.foot {
+  border-top: 1px solid var(--line);
+  margin-top: 96px;
+  padding: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+  a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-decoration-color: var(--ctl);
+    text-underline-offset: 3px;
+  }
+}
+
+// Quartz's own toggle stays for its theme bootstrap script; the footer switch replaces its button
+.cn-wrap > .darkmode,
+.cn-wrap .darkmode {
+  display: none;
+}
+
+.tgl {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--muted);
+  min-height: 32px;
+  position: relative;
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+  }
+  .tr {
+    width: 36px;
+    height: 20px;
+    border: 1px solid var(--ctl);
+    border-radius: 999px;
+    position: relative;
+    box-sizing: border-box;
+    flex: none;
+  }
+  .tr i {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--ink);
+    transition: transform 0.2s;
+  }
+  input:checked + .tr i {
+    transform: translateX(16px);
+  }
+  input:focus-visible + .tr {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+// ── Popovers: square, 1px ─────────────────────────────────────
+.popover > .popover-inner {
+  border-radius: 0;
+  border: 1px solid var(--line);
+  box-shadow: none;
+  background: var(--bg);
+}
+
+// Folder / tag listings replaced by the course components
+.cn-wrap:is([data-kind="course"], [data-kind="topic"]) .page-listing {
+  display: none;
+}
+
+// ── Page-specific bits ────────────────────────────────────────
+// Course head: stats · bar · Continue
+.cn-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  align-items: center;
+  margin-top: 24px;
+}
+.cn-stats-line {
+  color: var(--ink);
+  font-size: 14px;
+  a {
+    color: var(--ink);
+  }
+}
+.cn-stats-bar {
+  flex: 0 1 240px;
+  min-width: 120px;
+}
+.row strong.ch {
+  font-size: 17px;
+}
+
+// Home: courses table
+.cn-tbl-wrap {
+  overflow-x: auto;
+}
+.tbl {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.4fr;
+  min-width: 640px;
+  font-size: 14px;
+  > div {
+    padding: 12px 12px 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  > .th {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom-color: var(--ink);
+  }
+  a {
+    text-decoration-line: underline;
+    text-decoration-color: var(--ctl);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    &:hover {
+      text-decoration-color: var(--accent);
+      text-decoration-thickness: 2px;
+    }
+  }
+}
+.cn-tbl-desc {
+  font-size: 13px;
+  margin-top: 4px;
+}
+html body .tbl .cn-tbl-course strong {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.cn-tbl-bar {
+  margin-top: 9px;
+}
+.cn-home .cn-rail-static {
+  position: static;
+  max-height: none;
+  overflow: visible;
+}
+[data-cn-history][hidden] {
+  display: none;
+}
+
+// chips with a ✓/○ mark
+.chip .mk {
+  width: auto;
+}
+
+// topic / glossary lists use the full width
+.cn-sections.cn-wide {
+  max-width: none;
+}
+
+// TOC: Quartz marks every visible heading; only the first one is the active item
+.cn-rail .toc .toc-content > li:has(> a.in-view) ~ li > a.in-view {
+  color: var(--ink);
+  font-weight: inherit;
+}
+article table th {
+  font-family: var(--bodyFont);
+}
+.check input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--ink);
+}
+
+// Hover on every link: underlined + vermillon text (rows and prev/next underline their title)
+html body a:not(.btn):hover,
+html body a.internal:not(.btn):hover,
+html body a:not(.btn):hover strong,
+html body .cn-rail .toc .toc-content > li > a:hover {
+  color: var(--accent);
+  text-decoration-line: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+html body a:not(.btn):hover .mk {
+  color: var(--accent);
+}
+// rows / prev-next: only the title is underlined; chips: vermillon text + border
+html body a.row:not(.btn):hover,
+html body .pn a:hover,
+html body a.chip:hover {
+  text-decoration: none;
+}
+html body a.row:hover small,
+html body .pn a:hover small {
+  color: var(--muted);
+  text-decoration: none;
+}
+html body a.chip:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+// A–Z lists: one block per letter (header + entries never split across columns)
+.cols .grp {
+  break-inside: avoid;
+  margin-top: 16px;
+  &:first-child {
+    margin-top: 0;
+  }
+  &[hidden] {
+    display: none;
+  }
+  .L {
+    margin-top: 0;
+  }
+}
+
+// Every link to another page is underlined at rest (1px, ctl), vermillon on hover.
+// Anchor links on the same page (On this page) and the Continue button stay plain.
+html body a[href]:not([href^="#"]):not(.btn):not(.row):not(.result-card):not(.cols a):not(.pn a):not(.chip):not(.tag-link),
+html body a.row strong,
+html body .pn a strong,
+html body .cols a .t,
+html body .search .result-card .card-title {
+  text-decoration-line: underline;
+  text-decoration-color: var(--muted);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+html body a.chip:hover {
+  text-decoration-line: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+}
+html body .cols a:hover .t,
+html body a.row:hover strong,
+html body .pn a:hover strong,
+html body .search .result-card:hover .card-title,
+html body .search .result-card.focus .card-title {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+}
+
+// Topic pages: Quartz's own tag listing is replaced by the course components
+.cn-wrap:is([data-kind="tags"], [data-kind="topic"]) [data-quartz-component="TagPage"] {
+  display: none;
+}
+.cn-wrap[data-kind="tags"] .cn-sections,
+.cn-wrap[data-kind="topic"] .cn-sections .rows {
+  max-width: 680px;
+}
+.cn-wrap:is([data-kind="tags"], [data-kind="topic"]) .cn-main > .page-footer {
+  margin-top: 0;
+}
+
+// Chips and tag badges: never underlined (hover = vermillon text + border)
+html body a.chip,
+html body a.chip:hover,
+html body a.internal.tag-link,
+html body a.internal.tag-link:hover {
+  text-decoration: none;
+}
+html body a.internal.tag-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
 }

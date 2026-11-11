@@ -1,27 +1,51 @@
 {
   "name": "course-context",
-  "version": "1.0.0",
-  "description": "Course notes: per-course accent colour, course badge, and course metadata in the content index",
+  "version": "2.0.0",
+  "description": "Course notes: page frame, page head, rail blocks, footer, opened state and course metadata in the content index",
   "type": "module",
   "private": true,
   "exports": {
-    ".": { "import": "./dist/index.js" },
-    "./components": { "import": "./dist/components/index.js" },
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "import": "./dist/components/index.js"
+    },
+    "./frames": {
+      "import": "./dist/frames/index.js"
+    },
+    "./shared": {
+      "import": "./dist/shared.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
-  "peerDependencies": { "preact": "^10.0.0" },
+  "peerDependencies": {
+    "preact": "^10.0.0"
+  },
   "quartz": {
     "name": "course-context",
     "displayName": "Course Context",
-    "category": ["transformer", "component"],
-    "version": "1.0.0",
+    "category": [
+      "transformer",
+      "component"
+    ],
+    "version": "2.0.0",
     "quartzVersion": ">=5.1.0",
     "defaultOrder": 15,
     "defaultEnabled": true,
     "defaultOptions": {},
     "components": {
-      "CourseBadge": { "displayName": "Course Badge", "defaultPosition": "beforeBody", "defaultPriority": 6 }
+      "PageHead": {
+        "displayName": "Page Head",
+        "defaultPosition": "beforeBody",
+        "defaultPriority": 5
+      }
+    },
+    "frames": {
+      "CourseFrame": {
+        "exportName": "CourseFrame"
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-// Course graph: d3-force + SVG. Nodes coloured by course, sized by type.
+// Course graph: d3-force + SVG. Filled = opened (or course/chapter), hollow = not yet, accent = current page.
 // Data comes from contentIndex.json (fetchData), extended by course-context (entry.courseNotes).
 ;(() => {
   const D3_URL = "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm"
@@ -16,13 +16,13 @@
   async function buildData() {
     const index = await fetchData
     const nodes = new Map()
-    const colors = new Map()
+    const courses = new Set()
     for (const [slug, e] of Object.entries(index)) {
       const cn = e.courseNotes
       if (!cn || !LINK_TYPES.has(cn.type)) continue
       const id = simplify(slug)
       nodes.set(id, { id, slug, title: e.title, type: cn.type, course: cn.course ?? "", r: RADIUS[cn.type] })
-      if (cn.type === "course" && cn.color) colors.set(cn.course, cn.color)
+      if (cn.type === "course" && cn.course) courses.add(cn.course)
     }
     const links = []
     const seen = new Set()
@@ -38,11 +38,15 @@
         links.push({ source: s, target: t })
       }
     }
-    return { nodes, links, colors }
+    return { nodes, links, courses }
   }
 
-  function colorOf(colors, n) {
-    return colors.get(n.course) ?? (getComputedStyle(document.documentElement).getPropertyValue("--default-accent").trim() || "#0f766e")
+  const openedSet = () => {
+    try {
+      return new Set(JSON.parse(localStorage.getItem("cn-opened") ?? "[]"))
+    } catch {
+      return new Set()
+    }
   }
 
   function navigate(root, n) {
@@ -58,6 +62,7 @@
     const width = el.clientWidth || 300
     const height = el.clientHeight || 250
 
+    const opened = openedSet()
     const nodes = [...nodeIds].map((id) => ({ ...data.nodes.get(id) }))
     const byId = new Map(nodes.map((n) => [n.id, n]))
     const links = data.links.filter((l) => byId.has(l.source) && byId.has(l.target)).map((l) => ({ ...l }))
@@ -82,12 +87,11 @@
       .join("g")
       .attr("class", (d) => {
         const labelled = d.type !== "concept" || d.id === current || (!global && nodes.length < 14)
-        return "cg-node t-" + d.type + (d.id === current ? " current" : "") + (labelled ? "" : " label-hover")
+        return "cg-node t-" + d.type + (d.id === current ? " current" : "") + (opened.has(d.id) ? " opened" : "") + (labelled ? "" : " label-hover")
       })
     node
       .append("circle")
       .attr("r", (d) => d.r + (d.type === "concept" ? Math.min(3, Math.sqrt(degree.get(d.id) ?? 0) * 0.6) : 0))
-      .attr("fill", (d) => colorOf(data.colors, d))
     node
       .append("text")
       .attr("dy", (d) => -(d.r + 5))
@@ -161,16 +165,20 @@
         svg.classed("zoomed", e.transform.k > 1.6)
       })
     svg.call(zoom)
-    if (global) {
-      sim.on("end.fit", () => {
-        const b = g.node().getBBox()
-        if (!b.width) return
-        const k = Math.min(2, 0.9 / Math.max(b.width / width, b.height / height))
-        svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.scale(k).translate(-(b.x + b.width / 2), -(b.y + b.height / 2)))
-      })
+    const fit = () => {
+      const b = g.node().getBBox()
+      if (!b.width) return
+      const k = Math.min(2, 0.9 / Math.max(b.width / width, b.height / height))
+      svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.scale(k).translate(-(b.x + b.width / 2), -(b.y + b.height / 2)))
     }
+    if (global) sim.on("end.fit", fit)
 
     return {
+      stats: { nodes: nodes.length, links: links.length },
+      fit,
+      zoomBy(f) {
+        svg.transition().duration(250).call(zoom.scaleBy, f)
+      },
       filter(course) {
         node.classed("off", (d) => course && d.course !== course)
         link.classed("off", (l) => course && (l.source.course !== course || l.target.course !== course))
@@ -190,6 +198,12 @@
       return ids
     }
     ids.add(current)
+    const cur = data.nodes.get(current)
+    if (cur.type === "course") {
+      // course at the centre → its chapters
+      for (const n of data.nodes.values()) if (n.type === "chapter" && n.course === cur.course) ids.add(n.id)
+      return ids
+    }
     for (const l of data.links) {
       if (l.source === current) ids.add(l.target)
       if (l.target === current) ids.add(l.source)
@@ -202,7 +216,6 @@
     if (!box) return
     const local = box.querySelector(".cg-local")
     const modal = box.querySelector(".cg-modal")
-    const chips = box.querySelector(".cg-chips")
     const root = box.dataset.root || "."
     const current = simplify(document.body.dataset.slug ?? "")
 
@@ -236,22 +249,6 @@
       document.body.append(modal)
       document.documentElement.style.overflow = "hidden"
       modal.hidden = false
-      chips.replaceChildren()
-      const all = document.createElement("button")
-      all.className = "cg-chip active"
-      all.style.setProperty("--c", "var(--dark)")
-      all.textContent = "All courses"
-      all.dataset.course = ""
-      chips.append(all)
-      for (const [course, color] of data.colors) {
-        const b = document.createElement("button")
-        b.className = "cg-chip"
-        b.dataset.course = course
-        b.style.setProperty("--c", color)
-        b.innerHTML = "<i></i>"
-        b.append(course)
-        chips.append(b)
-      }
       globalGraph = await render(modal.querySelector(".cg-global"), {
         data,
         nodeIds: new Set(data.nodes.keys()),
@@ -260,12 +257,8 @@
         global: true,
         onNavigate: close,
       })
-    }
-    const onChip = (e) => {
-      const b = e.target.closest(".cg-chip")
-      if (!b) return
-      for (const c of chips.children) c.classList.toggle("active", c === b)
-      globalGraph?.filter(b.dataset.course)
+      const st = modal.querySelector(".cg-stats")
+      if (st && globalGraph) st.textContent = `${globalGraph.stats.nodes} notes · ${globalGraph.stats.links} links`
     }
     const onBackdrop = (e) => {
       if (e.target === modal) close()
@@ -274,16 +267,11 @@
       if (e.key === "Escape" && !modal.hidden) close()
     }
     const expand = box.querySelector(".cg-expand")
-    const closeBtn = box.querySelector(".cg-close")
     expand.addEventListener("click", open)
-    closeBtn.addEventListener("click", close)
-    chips.addEventListener("click", onChip)
     modal.addEventListener("click", onBackdrop)
     document.addEventListener("keydown", onKey)
     window.addCleanup?.(() => {
       expand.removeEventListener("click", open)
-      closeBtn.removeEventListener("click", close)
-      chips.removeEventListener("click", onChip)
       modal.removeEventListener("click", onBackdrop)
       document.removeEventListener("keydown", onKey)
       localGraph?.cleanup()

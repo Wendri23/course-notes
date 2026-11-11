@@ -16,30 +16,30 @@ configuration:
     fontOrigin: googleFonts
     cdnCaching: true
     typography:
-      header: Fraunces
+      header: Newsreader
       body: Inter
-      code: JetBrains Mono
+      code: IBM Plex Mono
     colors:
       lightMode:
-        light: "#fbfaf7"
-        lightgray: "#e9e6df"
-        gray: "#a39e96"
-        darkgray: "#3f3b36"
-        dark: "#1d1b18"
-        secondary: "#0f766e"
-        tertiary: "#c2410c"
-        highlight: rgba(15, 118, 110, 0.08)
-        textHighlight: "#fde68a99"
+        light: "#ffffff"
+        lightgray: "#e5e5e5"
+        gray: "#595959"
+        darkgray: "#111111"
+        dark: "#111111"
+        secondary: "#111111"
+        tertiary: "#E34234"
+        highlight: transparent
+        textHighlight: rgba(227, 66, 52, 0.16)
       darkMode:
-        light: "#121417"
-        lightgray: "#262a31"
-        gray: "#6b7280"
-        darkgray: "#d4d4d8"
-        dark: "#f4f4f5"
-        secondary: "#5eead4"
-        tertiary: "#fb923c"
-        highlight: rgba(94, 234, 212, 0.08)
-        textHighlight: "#a1620788"
+        light: "#141414"
+        lightgray: "#2a2a2a"
+        gray: "#9a9a9a"
+        darkgray: "#ededed"
+        dark: "#ededed"
+        secondary: "#ededed"
+        tertiary: "#FF6A4D"
+        highlight: transparent
+        textHighlight: rgba(255, 106, 77, 0.22)
   links:
     markdownLinkResolution: shortest
   contentIndex:
@@ -147,7 +147,7 @@ plugins:
   - source: "@quartz-community/tag-page"
     enabled: true
   - source: "@quartz-community/explorer"
-    enabled: true
+    enabled: false
     layout:
       position: left
       priority: 50
@@ -158,24 +158,23 @@ plugins:
       priority: 10
   - source: "@quartz-community/search"
     enabled: true
+    options:
+      enablePreview: false
     layout:
-      position: left
-      priority: 20
-      group: toolbar
-      groupOptions:
-        grow: true
+      position: right
+      priority: 1
   - source: "@quartz-community/backlinks"
-    enabled: true
+    enabled: false
     layout:
       position: right
       priority: 50
   - source: "@quartz-community/article-title"
-    enabled: true
+    enabled: false
     layout:
       position: beforeBody
       priority: 10
   - source: "@quartz-community/content-meta"
-    enabled: true
+    enabled: false
     layout:
       position: beforeBody
       priority: 20
@@ -186,24 +185,23 @@ plugins:
       position: beforeBody
       priority: 30
   - source: "@quartz-community/page-title"
-    enabled: true
+    enabled: false
     layout:
       position: left
       priority: 10
   - source: "@quartz-community/darkmode"
     enabled: true
     layout:
-      position: left
-      priority: 30
-      group: toolbar
+      position: footer
+      priority: 90
   - source: "@quartz-community/reader-mode"
-    enabled: true
+    enabled: false
     layout:
       position: left
       priority: 35
       group: toolbar
   - source: "@quartz-community/breadcrumbs"
-    enabled: true
+    enabled: false
     layout:
       position: beforeBody
       priority: 5
@@ -217,7 +215,7 @@ plugins:
       position: afterBody
       priority: 10
   - source: "@quartz-community/footer"
-    enabled: true
+    enabled: false
     options:
       links: {}
     layout:
@@ -226,7 +224,7 @@ plugins:
   - source: "@quartz-community/recent-notes"
     enabled: false
   - source: "@quartz-community/spacer"
-    enabled: true
+    enabled: false
     options: {}
     order: 25
     layout:
@@ -238,7 +236,7 @@ plugins:
     options: {}
     order: 50
   - source: "@quartz-community/note-properties"
-    enabled: true
+    enabled: false
     options:
       includeAll: false
       includedProperties:
@@ -264,7 +262,25 @@ plugins:
     order: 15
     layout:
       position: beforeBody
-      priority: 6
+      priority: 5
+  - source: ./plugins/course-rail
+    enabled: true
+    options: {}
+    layout:
+      position: right
+      priority: 5
+  - source: ./plugins/course-back
+    enabled: true
+    options: {}
+    layout:
+      position: right
+      priority: 90
+  - source: ./plugins/course-footer
+    enabled: true
+    options: {}
+    layout:
+      position: footer
+      priority: 50
   - source: ./plugins/course-dashboard
     enabled: true
     options: {}
@@ -277,8 +293,8 @@ plugins:
     options: {}
     order: 50
     layout:
-      position: beforeBody
-      priority: 40
+      position: afterBody
+      priority: 10
   - source: ./plugins/glossary
     enabled: true
     options:
@@ -298,32 +314,21 @@ plugins:
     order: 50
     layout:
       position: right
-      priority: 10
+      priority: 40
 layout:
-  groups:
-    toolbar:
-      priority: 35
-      direction: row
-      gap: 0.5rem
   byPageType:
     "404":
+      template: course
       positions:
         beforeBody: []
-        left: []
         right: []
-    content: {}
+    content:
+      template: course
     folder:
-      exclude:
-        - reader-mode
+      template: course
     tag:
-      exclude:
-        - reader-mode
-      positions:
-        right: []
+      template: course
     glossary:
-      exclude:
-        - reader-mode
-      positions:
-        right: []
+      template: course
     canvas: {}
     bases: {}

@@ -1,109 +1,114 @@
 import { h } from "preact"
+import { courseOf, fm, href, key, kindOf, site, slugList, tagLabel, titleOf } from "../../../course-context/dist/shared.js"
+import { azList, noteChip } from "../../../course-context/dist/ui.js"
 
-// ── helpers (same as course-context/dist/shared.js) ──
-const fm = (f) => f?.frontmatter ?? {}
-const baseName = (f) => (f?.relativePath ?? f?.filePath ?? f?.slug ?? "").split("/").pop().replace(/\.md$/, "")
-const pathToRoot = (slug) => {
-  const up = slug.split("/").filter(Boolean).slice(0, -1).map(() => "..").join("/")
-  return up || "."
-}
-const simplify = (s) => (s === "index" ? "" : s.endsWith("/index") ? s.slice(0, -6) : s)
-const href = (cur, target) => {
-  const t = simplify(target)
-  return t === "" ? pathToRoot(cur) + "/" : pathToRoot(cur) + "/" + t
-}
-const linkTarget = (v) => (typeof v === "string" ? v.replace(/^\[\[|\]\]$/g, "").split("|")[0].split("#")[0].trim() : "")
-
-/** Chapters of a course in order, each with its concepts. */
-function chaptersOf(course, allFiles) {
-  const chapters = allFiles
-    .filter((f) => fm(f).type === "chapter" && String(fm(f).course) === course)
-    .sort((a, b) => (Number(fm(a).chapter) || 99) - (Number(fm(b).chapter) || 99))
-  const concepts = allFiles.filter((f) => fm(f).type === "concept" && String(fm(f).course) === course)
-  return chapters.map((ch) => {
-    const name = baseName(ch)
-    const own = concepts.filter((c) => linkTarget(fm(c).source) === name)
-    const items = [ch, ...own]
-    const done = items.filter((f) => fm(f).status === "reviewed").length
-    return { file: ch, name, n: fm(ch).chapter, concepts: own, pct: Math.round((done / items.length) * 100) }
-  })
-}
-
+/**
+ * Sections around the note (main column), fed by frontmatter, folders and links only:
+ *   course  → Chapters rows + "Browse all N concepts"
+ *   chapter → Concepts in this chapter (chips ✓/○) + previous / next chapter
+ *   concept → Related concepts (outgoing) + Mentioned in (backlinks)
+ *   topic   → A–Z list of the concepts carrying the tag
+ * Every section is hidden when empty.
+ */
 export const LearningPath = () => {
   const LearningPath = ({ fileData, allFiles }) => {
-    const m = fm(fileData)
-    if (!m.course) return null
+    const kind = kindOf(fileData)
     const slug = fileData.slug
-    const chapters = chaptersOf(String(m.course), allFiles)
-    if (chapters.length === 0) return null
+    const s = site(allFiles)
+    const sections = []
+    const sec = (label, ...children) => h("section", { class: "sec" }, label ? h("span", { class: "lbl" }, label) : null, ...children)
 
-    // Course page: full timeline
-    if (m.type === "course") {
-      const total = chapters.reduce((s, c) => s + c.concepts.length, 0)
-      return h("nav", { class: "learning-path cn-card", "aria-label": "Learning path" },
-        h("div", { class: "lp-head" },
-          h("span", { class: "lp-kicker" }, "Learning path"),
-          h("span", { class: "lp-sum" }, `${chapters.length} chapters · ${total} concepts`)),
-        h("ol", { class: "lp-steps" },
-          ...chapters.map((c, i) =>
-            h("li", { class: "lp-step", style: `--p:${c.pct}%` },
-              h("span", { class: "lp-num" }, c.n ?? i + 1),
-              h("div", { class: "lp-body" },
-                h("a", { class: "internal lp-title", href: href(slug, c.file.slug) },
-                  fm(c.file).title ?? c.name),
-                h("div", { class: "lp-meta" },
-                  h("span", null, `${c.concepts.length} concepts`),
-                  h("span", { class: "lp-mini" }, h("span", null)),
-                  h("span", null, `${c.pct}%`)))))))
+    if (kind === "course") {
+      const course = courseOf(fileData, allFiles)
+      if (!course) return null
+      const chapters = s.chapters(course.name)
+      const all = s.concepts(course.name)
+      if (chapters.length) {
+        sections.push(sec("Chapters",
+          h("nav", { class: "rows", "aria-label": "Chapters" },
+            ...chapters.map((ch, i) => {
+              const list = s.conceptsOf(ch)
+              return h("a", { class: "row", href: href(slug, ch.slug) },
+                h("strong", { class: "ch" }, `${fm(ch).chapter ?? i + 1} · ${titleOf(ch)}`),
+                h("small", null, `${list.length} concepts · `, h("span", { "data-cn-of": slugList(list) }, "0"), " opened →"))
+            }))))
+      }
+      if (all.length) {
+        sections.push(sec(null,
+          h("div", { class: "rows" },
+            h("a", { class: "row", href: href(slug, slug.replace(/index$/, "") + "all-concepts") },
+              h("strong", null, `Browse all ${all.length} concepts`), h("small", null, "→")))))
+      }
     }
 
-    // Chapter page: position in the path + previous / next
-    if (m.type === "chapter") {
-      const i = chapters.findIndex((c) => c.file.slug === slug)
-      if (i < 0) return null
-      const prev = chapters[i - 1]
-      const next = chapters[i + 1]
-      return h("nav", { class: "lp-chapter", "aria-label": "Chapter navigation" },
-        h("div", { class: "lp-dots" },
-          ...chapters.map((c, j) =>
-            h("a", {
-              class: "lp-dot" + (j === i ? " current" : j < i ? " before" : ""),
-              href: href(slug, c.file.slug),
-              title: `${c.n}. ${fm(c.file).title ?? c.name}`,
-              "data-no-popover": "true",
-            }, c.n ?? j + 1))),
-        h("div", { class: "lp-prevnext" },
-          prev ? h("a", { class: "internal", href: href(slug, prev.file.slug) }, "← ", fm(prev.file).title ?? prev.name) : h("span"),
-          next ? h("a", { class: "internal", href: href(slug, next.file.slug) }, fm(next.file).title ?? next.name, " →") : h("span")))
+    if (kind === "chapter") {
+      const list = s.conceptsOf(fileData)
+      if (list.length) sections.push(sec("Concepts in this chapter", h("div", { class: "chips" }, ...list.map((f) => noteChip(slug, f)))))
+      const course = courseOf(fileData, allFiles)
+      const chapters = course ? s.chapters(course.name) : []
+      const i = chapters.findIndex((c) => key(c) === key(fileData))
+      const prev = i > 0 ? chapters[i - 1] : null
+      const next = i >= 0 ? chapters[i + 1] : null
+      if (prev || next) {
+        sections.push(sec(null,
+          h("nav", { class: "pn", "aria-label": "Chapters" },
+            prev ? h("a", { href: href(slug, prev.slug) }, h("small", null, "← Previous chapter"), h("strong", null, titleOf(prev))) : h("span"),
+            next ? h("a", { href: href(slug, next.slug), style: "text-align: right" }, h("small", null, "Next chapter →"), h("strong", null, titleOf(next))) : h("span"))))
+      }
     }
-    return null
+
+    if (kind === "concept") {
+      const me = key(fileData)
+      const related = []
+      const seen = new Set([me])
+      for (const l of fileData.links ?? []) {
+        const f = s.bySlug.get(String(l).replace(/\/index$/, ""))
+        if (f && fm(f).type === "concept" && !seen.has(key(f))) {
+          seen.add(key(f))
+          related.push(f)
+        }
+      }
+      if (related.length) sections.push(sec("Related concepts", h("div", { class: "chips" }, ...related.map((f) => noteChip(slug, f)))))
+
+      const mentioned = allFiles
+        .filter((f) => key(f) !== me && (f.links ?? []).some((l) => String(l).replace(/\/index$/, "") === me))
+        .filter((f) => ["concept", "chapter", "course"].includes(fm(f).type))
+        .sort((a, b) => {
+          const rank = { course: 0, chapter: 1, concept: 2 }
+          return rank[fm(a).type] - rank[fm(b).type] || titleOf(a).localeCompare(titleOf(b))
+        })
+      if (mentioned.length) {
+        sections.push(sec("Mentioned in",
+          h("div", { class: "chips" },
+            ...mentioned.map((f) =>
+              fm(f).type === "concept"
+                ? noteChip(slug, f)
+                : h("a", { class: "chip", href: href(slug, f.slug) }, `${titleOf(f)} (${fm(f).type})`)))))
+      }
+    }
+
+    if (kind === "topic" || kind === "tags") {
+      const tag = kind === "tags" ? "" : slug.slice("tags/".length).replace(/\/?index$/, "")
+      const list = tag ? s.tagged(tag) : []
+      if (list.length) sections.push(h("div", { class: "cn-topic" }, azList(slug, list, { c4: true })))
+      else {
+        // topics index: one row per topic, most used first
+        const subs = s.subtopics(tag)
+        if (subs.length) {
+          sections.push(sec(null,
+            h("nav", { class: "rows", "aria-label": "Topics" },
+              ...subs.map(([t]) => {
+                const files = s.tagged(t)
+                return h("a", { class: "row", href: href(slug, "tags/" + t) },
+                  h("strong", null, tagLabel(t)),
+                  h("small", null, `${files.length} concepts · `, h("span", { "data-cn-of": slugList(files) }, "0"), " opened →"))
+              }))))
+        }
+      }
+    }
+
+    if (!sections.length) return null
+    return h("div", { class: "cn-sections" + (kind === "topic" || kind === "tags" ? " cn-wide" : "") }, ...sections)
   }
-
-  LearningPath.css = `
-.learning-path { margin: 1.2rem 0 1.6rem; padding: 1rem 1.2rem 1.1rem; }
-.lp-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .8rem; }
-.lp-kicker { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); }
-.lp-sum { font-size: .8rem; color: var(--gray); }
-.lp-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; counter-reset: none; }
-.lp-step { position: relative; display: flex; gap: .6rem; align-items: flex-start; margin: 0; padding: .6rem .7rem;
-  border-radius: 12px; background: var(--accent-soft); border: 1px solid var(--accent-line); }
-.lp-num { flex: none; display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%;
-  font-weight: 700; font-size: .85rem; color: var(--light); background: var(--accent); }
-.lp-body { min-width: 0; display: flex; flex-direction: column; gap: .25rem; }
-.learning-path a.lp-title { font-weight: 600; font-size: .9rem; line-height: 1.25; text-decoration: none; }
-.lp-meta { display: flex; align-items: center; gap: .4rem; font-size: .72rem; color: var(--gray); }
-.lp-mini { flex: 1; min-width: 24px; height: 4px; border-radius: 9px; background: var(--lightgray); overflow: hidden; }
-.lp-mini > span { display: block; height: 100%; width: var(--p); background: var(--accent); }
-.lp-chapter { margin: .4rem 0 1.4rem; padding: .7rem 0; border-top: 1px solid var(--lightgray); border-bottom: 1px solid var(--lightgray); }
-.lp-dots { display: flex; align-items: center; gap: 0; margin-bottom: .5rem; }
-.lp-dots .lp-dot { position: relative; display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 50%;
-  font-size: .75rem; font-weight: 700; text-decoration: none; color: var(--darkgray); background: var(--lightgray); flex: none; }
-.lp-dots .lp-dot + .lp-dot { margin-left: 1.4rem; }
-.lp-dots .lp-dot + .lp-dot::before { content: ""; position: absolute; right: 100%; width: 1.4rem; height: 2px; background: var(--lightgray); }
-.lp-dots .lp-dot.before { background: var(--accent-line); color: var(--dark); }
-.lp-dots .lp-dot.current { background: var(--accent); color: var(--light); box-shadow: 0 0 0 4px var(--accent-soft); }
-.lp-prevnext { display: flex; justify-content: space-between; gap: 1rem; font-size: .88rem; }
-.lp-prevnext a { text-decoration: none !important; }
-`
   return LearningPath
 }

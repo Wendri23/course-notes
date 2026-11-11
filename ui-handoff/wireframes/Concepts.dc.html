@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Course concepts — Network</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500&display=swap");
+/* ── Course notes · design system v1 (shared, identical on every page) ──
+   ink #111 · accent vermillon #E34234 · muted #595959 · line #e5e5e5 · fill #f2f2f2
+   Inter (UI) + Newsreader (titles) · type 48 / 15 / 14 / 13 / 12 · space 8 · 16 · 24 · 48 · 64 · borders 1px only */
+body{margin:0;background:#fff}
+.page{--bg:#fff;--ink:#111;--ink2:#333;--muted:#595959;--ctl:#d4d4d4;--line:#e5e5e5;--ph:#ececec;--ph2:#d9d9d9;--edge:#bbb;--stripe:#f6f6f6;--accent:#E34234;min-height:100%}
+.page:has(.tgl input:checked){--bg:#141414;--ink:#ededed;--ink2:#cfcfcf;--muted:#9a9a9a;--ctl:#3d3d3d;--line:#2a2a2a;--ph:#262626;--ph2:#353535;--edge:#555;--stripe:#1b1b1b;--accent:#FF6A4D;color-scheme:dark}
+svg [fill="#111"]{fill:var(--ink)}svg [fill="#fff"]{fill:var(--bg)}svg [fill="#595959"]{fill:var(--muted)}svg [stroke="#111"]{stroke:var(--ink)}svg [stroke="#bbb"]{stroke:var(--edge)}
+.tgl{display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:var(--muted);min-height:32px;position:relative}
+.tgl input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.tr{width:36px;height:20px;border:1px solid var(--ctl);border-radius:999px;position:relative;box-sizing:border-box;flex:none}
+.tr i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--ink);transition:transform .2s}
+.tgl input:checked+.tr i{transform:translateX(16px)}
+.tgl input:focus-visible+.tr{outline:2px solid var(--accent);outline-offset:2px}
+/* theme: follows the device setting; the switch flips it */
+@media (prefers-color-scheme:dark){.page:not(:has(.tgl input:checked)){--bg:#141414;--ink:#ededed;--ink2:#cfcfcf;--muted:#9a9a9a;--ctl:#3d3d3d;--line:#2a2a2a;--ph:#262626;--ph2:#353535;--edge:#555;--stripe:#1b1b1b;--accent:#FF6A4D;color-scheme:dark}.page:has(.tgl input:checked){--bg:#fff;--ink:#111;--ink2:#333;--muted:#595959;--ctl:#d4d4d4;--line:#e5e5e5;--ph:#ececec;--ph2:#d9d9d9;--edge:#bbb;--stripe:#f6f6f6;--accent:#E34234;color-scheme:light}.tgl input:not(:checked)+.tr i{transform:translateX(16px)}.tgl input:checked+.tr i{transform:none}}
+/* accent — used sparingly: progress, current item, hover, focus */
+a:hover{text-decoration-color:var(--accent);text-decoration-thickness:2px}
+a.chip:hover{border-color:var(--accent)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;flex:none}
+.page{font:15px/1.55 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif;font-feature-settings:"cv11";color:var(--ink);background:var(--bg)}
+.wrap{max-width:1200px;margin:0 auto;padding:48px 32px;box-sizing:border-box}
+a{color:var(--ink);text-decoration:none}a:hover{text-decoration:underline;text-underline-offset:3px}
+.muted{color:var(--muted)}
+.crumb{font-size:13px;color:var(--muted)}.crumb a{color:var(--muted)}
+.h1{font-family:"Newsreader",Georgia,serif;font-size:48px;line-height:1.1;letter-spacing:-.015em;font-weight:500;margin:8px 0}
+.meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.head{margin-bottom:48px}
+.lbl{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.sec{margin-bottom:48px}.sec:last-child{margin-bottom:0}
+.layout{display:flex;flex-wrap:wrap;gap:64px;align-items:flex-start}
+.main{flex:999 1 600px;min-width:0}
+.rail{flex:1 1 260px;max-width:280px;display:flex;flex-direction:column;gap:40px;position:sticky;top:24px;max-height:calc(100vh - 48px);overflow-y:auto}
+.rows{border-top:1px solid var(--line)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+a.row:hover{text-decoration:none}a.row:hover strong{text-decoration:underline;text-underline-offset:3px}
+.row small{font-size:13px;color:var(--muted);white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ctl);border-radius:999px;padding:2px 10px;font-size:13px;line-height:1.6}
+a.chip:hover{border-color:var(--ink);text-decoration:none}
+.links{display:flex;flex-direction:column;gap:8px;font-size:14px}
+.back{display:block;font-size:14px;padding-top:16px;border-top:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;height:40px;padding:0 16px;background:var(--ink);color:var(--bg);font-size:14px;box-sizing:border-box}
+.btn:hover{background:var(--ink2);text-decoration:none}
+.field{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid var(--ctl);font:inherit;font-size:14px;color:var(--muted);background:var(--bg);box-sizing:border-box}
+.field input{border:0;font:inherit;color:var(--ink);flex:1;min-width:0;outline:none;background:transparent}
+.field:focus-within,select.field:focus{border-color:var(--accent);outline:none}
+select.field{color:var(--ink)}
+.kbd{font:11px ui-monospace,Menlo,monospace;border:1px solid var(--ctl);padding:1px 5px;color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:24px}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;min-height:40px}
+.bar{height:4px;background:var(--line)}.bar>i{display:block;height:100%;background:var(--accent)}
+.cols{columns:3 220px;column-gap:32px;font-size:14px;line-height:2}
+.cols.c4{columns:4 200px}
+.cols a{display:block;break-inside:avoid}
+.mk,.cols i{font-style:normal;color:var(--muted);display:inline-block;width:20px}
+.L{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--muted);margin-top:16px;border-bottom:1px solid var(--line);break-after:avoid}
+.L:first-child{margin-top:0}
+.graph{display:block;width:100%;height:auto;border:1px solid var(--line)}
+.toc{border-left:1px solid var(--line);padding-left:14px;display:flex;flex-direction:column;gap:10px}
+.pn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;border-top:1px solid var(--line);padding-top:16px;font-size:14px}
+.pn small{display:block;font-size:13px;color:var(--muted)}
+.foot{border-top:1px solid var(--line);margin-top:96px;padding:20px 0;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+/* markdown placeholder (the note itself, rendered as-is) */
+.md{border:1px dashed var(--edge);padding:32px;margin-bottom:48px}
+.md-note{font:12px ui-monospace,Menlo,monospace;color:var(--muted);margin-bottom:20px}
+.ln{height:8px;background:var(--ph);margin:0 0 10px}
+.md-h{height:14px;background:var(--ph2);margin:28px 0 14px}
+.fig{height:150px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 0 18px;font-size:13px;color:var(--muted);background:repeating-linear-gradient(45deg,var(--bg) 0 12px,var(--stripe) 12px 24px)}
+
+/* links: underlined where they sit in text; plain in lists and rows */
+.u,.links a,.crumb a,.meta a,.tbl a,.md a,a.back,.wl{text-decoration:underline;text-decoration-color:var(--ctl);text-decoration-thickness:1px;text-underline-offset:3px}
+.u:hover,.links a:hover,.crumb a:hover,.meta a:hover,.tbl a:hover,.md a:hover,a.back:hover,.wl:hover{text-decoration-color:var(--accent);text-decoration-thickness:2px}
+/* keyboard focus: always visible */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.field input:focus-visible{outline:none}
+/* reading: the note is 68ch wide, 17px */
+.md{max-width:68ch;font-size:17px;line-height:1.65}
+.md ~ .sec{max-width:680px}
+/* graph: interactive in Quartz; expand opens the full graph */
+.gwrap{position:relative}
+.gx{position:absolute;top:8px;right:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer;padding:0}
+.gx:hover{color:var(--ink);border-color:var(--ctl)}
+/* hover: every link gets the same vermillon underline */
+a:hover,a.row:hover strong,.pn a:hover strong{text-decoration-line:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:3px}
+a.row:hover,.pn a:hover{text-decoration:none}
+a.chip:hover{border-color:var(--accent);text-decoration:none}
+a.btn:hover{text-decoration:none}
+/* full graph (popover) */
+.gpop{border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:24px;width:min(880px,92vw);box-sizing:border-box;font:15px/1.55 "Inter",system-ui,sans-serif}
+.gpop::backdrop{background:rgba(0,0,0,.45)}
+.gpop-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.gpop .graph{border:0}
+</style>
+</helmet>
+<div class="page" style="min-height: 1900px">
+  <div class="wrap">
+
+    <section class="head">
+      <div class="crumb"><a href="HomeA.dc.html">Course notes</a> › <a href="CourseA.dc.html">Network</a> › Concepts</div>
+      <h1 class="h1">All concepts</h1>
+      <div class="meta">104 concepts in Network · 12 opened</div>
+    </section>
+
+    <div class="layout">
+      <main class="main">
+        <div class="controls">
+          <label class="field" style="flex: 1 1 260px">Filter<input type="text" placeholder="type to narrow 104 concepts…"></label>
+          <select class="field" aria-label="Chapter"><option>All chapters</option><option>1 · Computer Networks and the Internet</option><option>2 · Application Layer</option><option>3 · Transport Layer</option><option>4 · Network Layer and Routing</option><option>5 · Link Layer and Local Area Networks</option><option>6 · Cryptography Basics</option></select>
+          <label class="check"><input type="checkbox">Not opened yet</label>
+        </div>
+
+        <div class="cols">
+          <b class="L">#</b>
+          <a href="#"><i>○</i>802.1X and RADIUS</a>
+          <b class="L">A</b>
+          <a href="#"><i>○</i>AES</a><a href="#"><i>○</i>App Transport Requirements</a><a href="#"><i>○</i>Application Layer Protocol</a><a href="#"><i>○</i>Autonomous Systems</a>
+          <b class="L">B</b>
+          <a href="#"><i>○</i>BGP</a><a href="#"><i>○</i>Best Effort</a>
+          <b class="L">C</b>
+          <a href="#"><i>○</i>CDMA</a><a href="#"><i>○</i>CSMA-CA</a><a href="#"><i>○</i>Certification Authority</a><a href="#"><i>✓</i>Circuit Switching</a><a href="#"><i>○</i>Computational Security</a><a href="#"><i>○</i>Congestion Control Principles</a><a href="#"><i>○</i>Content Distribution Network</a><a href="#"><i>○</i>Cookies</a>
+          <b class="L">D</b>
+          <a href="#"><i>○</i>DES</a><a href="#"><i>○</i>DHCP</a><a href="#"><i>○</i>DNS</a><a href="#"><i>○</i>DNS Privacy</a><a href="#"><i>○</i>DNS Records</a><a href="#"><i>○</i>DNSSEC</a><a href="#"><i>○</i>Datagram networks</a><a href="#"><i>○</i>Dijkstra Algorithm</a><a href="#"><i>○</i>Distance Vector</a>
+          <b class="L">E</b>
+          <a href="#"><i>○</i>Electronic Mail</a><a href="#"><i>○</i>Elliptic Curve Cryptography</a><a href="#"><i>○</i>Email Security</a><a href="#"><i>✓</i>Error Detection</a><a href="#"><i>○</i>Ethernet</a>
+          <b class="L">F</b>
+          <a href="#"><i>○</i>FTP</a><a href="#"><i>○</i>Fiber To The x</a><a href="#"><i>○</i>Frequency Division Multiplexing</a>
+          <b class="L">H</b>
+          <a href="#"><i>○</i>HTTP</a><a href="#"><i>○</i>HTTP Connections</a><a href="#"><i>○</i>HTTPS and TLS</a><a href="#"><i>○</i>Hash Functions</a><a href="#"><i>○</i>Hybrid Fiber Coax</a>
+          <b class="L">I</b>
+          <a href="#"><i>○</i>ICMP</a><a href="#"><i>○</i>IP Addressing</a><a href="#"><i>○</i>IP Forwarding</a><a href="#"><i>○</i>IPsec</a><a href="#"><i>○</i>IPv4 to IPv6 Transition</a><a href="#"><i>○</i>IPv6</a><a href="#"><i>○</i>ISP Hierarchy</a><a href="#"><i>○</i>Internet History</a><a href="#"><i>○</i>Internet Protocol Stack</a>
+          <b class="L">K</b>
+          <a href="#"><i>○</i>Key Distribution Center</a>
+          <b class="L">L</b>
+          <a href="#"><i>✓</i>Link Layer Services</a><a href="#"><i>○</i>Link Layer Switches</a><a href="#"><i>○</i>Local Area Network</a>
+          <b class="L">M</b>
+          <a href="#"><i>○</i>MAC Address and ARP</a><a href="#"><i>○</i>MIME</a><a href="#"><i>○</i>Mail Access Protocols</a><a href="#"><i>✓</i>Multiple Access Protocols</a><a href="#"><i>○</i>Multiplexing and Demultiplexing</a>
+          <b class="L">N</b>
+          <a href="#"><i>○</i>NAT</a><a href="#"><i>✓</i>Network Access</a><a href="#"><i>○</i>Network Function Virtualisation</a><a href="#"><i>○</i>Network Layer Services</a><a href="#"><i>✓</i>Nodal Delay</a>
+          <b class="L">O</b>
+          <a href="#"><i>○</i>OSI Model</a><a href="#"><i>○</i>OSPF</a>
+          <b class="L">P</b>
+          <a href="#"><i>○</i>Packet Loss</a><a href="#"><i>✓</i>Packet Switching</a><a href="#"><i>○</i>Peer-to-Peer</a><a href="#"><i>○</i>Person in the middle attack</a><a href="#"><i>✓</i>Physical Media</a><a href="#"><i>○</i>Pipelined Protocols</a><a href="#"><i>○</i>Post-Quantum Cryptography</a><a href="#"><i>○</i>Protocol Layering</a><a href="#"><i>○</i>Public Key Cryptography</a>
+          <b class="L">Q</b>
+          <a href="#"><i>○</i>QUIC</a><a href="#"><i>✓</i>Queueing Delay</a>
+          <b class="L">R</b>
+          <a href="#"><i>○</i>RIP</a><a href="#"><i>○</i>RSA</a><a href="Concept.dc.html"><i>✓</i>Random Access Protocols</a><a href="#"><i>○</i>Reliable Data Transfer</a><a href="#"><i>○</i>Route Aggregation</a><a href="#"><i>○</i>Router Architecture</a><a href="#"><i>○</i>Routing Algorithms</a>
+          <b class="L">S</b>
+          <a href="#"><i>○</i>Session Key</a><a href="#"><i>○</i>Socket</a><a href="#"><i>○</i>Software Defined Networking</a><a href="#"><i>○</i>Statistical Multiplexing</a><a href="#"><i>○</i>Symmetric Key Cryptography</a>
+          <b class="L">T</b>
+          <a href="#"><i>○</i>TCP Congestion Control</a><a href="#"><i>○</i>TCP Connection Management</a><a href="#"><i>○</i>TCP Fairness</a><a href="#"><i>○</i>TCP Flow Control</a><a href="#"><i>○</i>TCP Latency Model</a><a href="#"><i>○</i>TCP Reliable Data Transfer</a><a href="#"><i>○</i>TCP Segment Structure</a><a href="#"><i>✓</i>The Network edge</a><a href="#"><i>○</i>Time Division Multiplexing</a><a href="#"><i>○</i>Traceroute</a><a href="#"><i>○</i>Transport Layer Services</a>
+          <b class="L">U</b>
+          <a href="#"><i>○</i>UDP</a>
+          <b class="L">V</b>
+          <a href="#"><i>○</i>VLAN</a><a href="#"><i>○</i>Virtual Circuit networks</a>
+          <b class="L">W</b>
+          <a href="#"><i>○</i>Web Caching</a><a href="#"><i>○</i>What is a Protocol</a><a href="#"><i>✓</i>What is the Internet</a><a href="#"><i>○</i>Wireless access networks</a>
+          <b class="L">X</b>
+          <a href="#"><i>○</i>xDSL</a></div>
+      </main>
+
+      <aside class="rail">
+        <div>
+          <span class="lbl">Topics</span>
+          <div class="chips"><a href="Topic.dc.html" class="chip">protocol</a><a href="#" class="chip">architecture</a><a href="#" class="chip">security</a><a href="#" class="chip">routing</a><span class="chip muted">+ 8</span></div>
+        </div>
+        <div>
+          <span class="lbl">Recently updated</span>
+          <div class="links"><a href="#">Application Layer</a><a href="#">802.1X and RADIUS</a><a href="#">Cryptography Basics</a></div>
+        </div>
+        <div>
+          <a href="CourseA.dc.html" class="back">← Back to the Network course</a>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="foot">
+      <span>Course notes · built with Quartz</span>
+      <label class="tgl" title="Light / dark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><input type="checkbox" aria-label="Dark mode"><span class="tr"><i></i></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></label>
+    </footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

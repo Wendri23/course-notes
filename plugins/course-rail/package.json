@@ -1,0 +1,38 @@
+{
+  "name": "course-rail",
+  "version": "1.0.0",
+  "description": "Course notes: rail blocks (progress, topics, glossary, recently updated)",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "import": "./dist/components/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "peerDependencies": {
+    "preact": "^10.0.0"
+  },
+  "quartz": {
+    "name": "course-rail",
+    "displayName": "Course Rail",
+    "category": [
+      "component"
+    ],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.1.0",
+    "defaultEnabled": true,
+    "defaultOptions": {},
+    "components": {
+      "RailTop": {
+        "displayName": "Course Rail",
+        "defaultPosition": "right",
+        "defaultPriority": 5
+      }
+    }
+  }
+}

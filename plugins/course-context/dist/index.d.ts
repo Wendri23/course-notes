@@ -1,1 +1,1 @@
-export declare const plugin: any; export declare const CourseBadge: any;
+export declare const plugin: any; export declare const PageHead: any; export declare const RailTop: any; export declare const BackLink: any; export declare const SiteFooter: any; export declare const CourseBadge: any;

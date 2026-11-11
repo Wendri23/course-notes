@@ -1,6 +1,6 @@
-// course-context: exposes course metadata to client-side features (graph, glossary, dashboard)
-// through the content index, and provides the CourseBadge component.
-export { CourseBadge } from "./components/index.js"
+// course-context: shared course data, the page frame, page head, rail blocks, footer
+// and the "opened" client script. Also exposes course metadata in the content index.
+export { PageHead, RailTop, BackLink, SiteFooter, CourseBadge } from "./components/index.js"
 
 const asList = (v) => (Array.isArray(v) ? v.map(String) : typeof v === "string" && v ? [v] : [])
 
@@ -19,7 +19,6 @@ export const plugin = () => ({
         chapter: m.chapter,
         source: source || undefined,
         aliases: asList(m.aliases),
-        color: m.type === "course" ? m.color : undefined,
       },
     }
   },

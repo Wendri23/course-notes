@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Design system</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500&display=swap");
+/* ── Course notes · design system v1 (shared, identical on every page) ──
+   ink #111 · accent vermillon #E34234 · muted #595959 · line #e5e5e5 · fill #f2f2f2
+   Inter (UI) + Newsreader (titles) · type 48 / 15 / 14 / 13 / 12 · space 8 · 16 · 24 · 48 · 64 · borders 1px only */
+body{margin:0;background:#fff}
+.page{--bg:#fff;--ink:#111;--ink2:#333;--muted:#595959;--ctl:#d4d4d4;--line:#e5e5e5;--ph:#ececec;--ph2:#d9d9d9;--edge:#bbb;--stripe:#f6f6f6;--accent:#E34234;min-height:100%}
+.page:has(.tgl input:checked){--bg:#141414;--ink:#ededed;--ink2:#cfcfcf;--muted:#9a9a9a;--ctl:#3d3d3d;--line:#2a2a2a;--ph:#262626;--ph2:#353535;--edge:#555;--stripe:#1b1b1b;--accent:#FF6A4D;color-scheme:dark}
+svg [fill="#111"]{fill:var(--ink)}svg [fill="#fff"]{fill:var(--bg)}svg [fill="#595959"]{fill:var(--muted)}svg [stroke="#111"]{stroke:var(--ink)}svg [stroke="#bbb"]{stroke:var(--edge)}
+.tgl{display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:var(--muted);min-height:32px;position:relative}
+.tgl input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.tr{width:36px;height:20px;border:1px solid var(--ctl);border-radius:999px;position:relative;box-sizing:border-box;flex:none}
+.tr i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--ink);transition:transform .2s}
+.tgl input:checked+.tr i{transform:translateX(16px)}
+.tgl input:focus-visible+.tr{outline:2px solid var(--accent);outline-offset:2px}
+/* theme: follows the device setting; the switch flips it */
+@media (prefers-color-scheme:dark){.page:not(:has(.tgl input:checked)){--bg:#141414;--ink:#ededed;--ink2:#cfcfcf;--muted:#9a9a9a;--ctl:#3d3d3d;--line:#2a2a2a;--ph:#262626;--ph2:#353535;--edge:#555;--stripe:#1b1b1b;--accent:#FF6A4D;color-scheme:dark}.page:has(.tgl input:checked){--bg:#fff;--ink:#111;--ink2:#333;--muted:#595959;--ctl:#d4d4d4;--line:#e5e5e5;--ph:#ececec;--ph2:#d9d9d9;--edge:#bbb;--stripe:#f6f6f6;--accent:#E34234;color-scheme:light}.tgl input:not(:checked)+.tr i{transform:translateX(16px)}.tgl input:checked+.tr i{transform:none}}
+/* accent — used sparingly: progress, current item, hover, focus */
+a:hover{text-decoration-color:var(--accent);text-decoration-thickness:2px}
+a.chip:hover{border-color:var(--accent)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;flex:none}
+.page{font:15px/1.55 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif;font-feature-settings:"cv11";color:var(--ink);background:var(--bg)}
+.wrap{max-width:1200px;margin:0 auto;padding:48px 32px;box-sizing:border-box}
+a{color:var(--ink);text-decoration:none}a:hover{text-decoration:underline;text-underline-offset:3px}
+.muted{color:var(--muted)}
+.crumb{font-size:13px;color:var(--muted)}.crumb a{color:var(--muted)}
+.h1{font-family:"Newsreader",Georgia,serif;font-size:48px;line-height:1.1;letter-spacing:-.015em;font-weight:500;margin:8px 0}
+.meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.head{margin-bottom:48px}
+.lbl{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.sec{margin-bottom:48px}.sec:last-child{margin-bottom:0}
+.layout{display:flex;flex-wrap:wrap;gap:64px;align-items:flex-start}
+.main{flex:999 1 600px;min-width:0}
+.rail{flex:1 1 260px;max-width:280px;display:flex;flex-direction:column;gap:40px;position:sticky;top:24px;max-height:calc(100vh - 48px);overflow-y:auto}
+.rows{border-top:1px solid var(--line)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+a.row:hover{text-decoration:none}a.row:hover strong{text-decoration:underline;text-underline-offset:3px}
+.row small{font-size:13px;color:var(--muted);white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ctl);border-radius:999px;padding:2px 10px;font-size:13px;line-height:1.6}
+a.chip:hover{border-color:var(--ink);text-decoration:none}
+.links{display:flex;flex-direction:column;gap:8px;font-size:14px}
+.back{display:block;font-size:14px;padding-top:16px;border-top:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;height:40px;padding:0 16px;background:var(--ink);color:var(--bg);font-size:14px;box-sizing:border-box}
+.btn:hover{background:var(--ink2);text-decoration:none}
+.field{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid var(--ctl);font:inherit;font-size:14px;color:var(--muted);background:var(--bg);box-sizing:border-box}
+.field input{border:0;font:inherit;color:var(--ink);flex:1;min-width:0;outline:none;background:transparent}
+.field:focus-within,select.field:focus{border-color:var(--accent);outline:none}
+select.field{color:var(--ink)}
+.kbd{font:11px ui-monospace,Menlo,monospace;border:1px solid var(--ctl);padding:1px 5px;color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:24px}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;min-height:40px}
+.bar{height:4px;background:var(--line)}.bar>i{display:block;height:100%;background:var(--accent)}
+.cols{columns:3 220px;column-gap:32px;font-size:14px;line-height:2}
+.cols.c4{columns:4 200px}
+.cols a{display:block;break-inside:avoid}
+.mk,.cols i{font-style:normal;color:var(--muted);display:inline-block;width:20px}
+.L{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--muted);margin-top:16px;border-bottom:1px solid var(--line);break-after:avoid}
+.L:first-child{margin-top:0}
+.graph{display:block;width:100%;height:auto;border:1px solid var(--line)}
+.toc{border-left:1px solid var(--line);padding-left:14px;display:flex;flex-direction:column;gap:10px}
+.pn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;border-top:1px solid var(--line);padding-top:16px;font-size:14px}
+.pn small{display:block;font-size:13px;color:var(--muted)}
+.foot{border-top:1px solid var(--line);margin-top:96px;padding:20px 0;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+/* markdown placeholder (the note itself, rendered as-is) */
+.md{border:1px dashed var(--edge);padding:32px;margin-bottom:48px}
+.md-note{font:12px ui-monospace,Menlo,monospace;color:var(--muted);margin-bottom:20px}
+.ln{height:8px;background:var(--ph);margin:0 0 10px}
+.md-h{height:14px;background:var(--ph2);margin:28px 0 14px}
+.fig{height:150px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 0 18px;font-size:13px;color:var(--muted);background:repeating-linear-gradient(45deg,var(--bg) 0 12px,var(--stripe) 12px 24px)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px 64px}
+.sw{display:flex;gap:12px;align-items:center;font-size:13px;margin-bottom:8px}
+.sw i{width:32px;height:32px;border:1px solid var(--line);display:block}
+.spec{font:12px ui-monospace,Menlo,monospace;color:var(--muted)}
+.sp{display:flex;align-items:center;gap:12px;font-size:13px;margin-bottom:6px}
+.sp i{display:block;height:8px;background:var(--ink)}
+.qt{display:grid;grid-template-columns:150px 1fr 170px 170px;font-size:14px;border-top:1px solid var(--line)}
+.qt>div{padding:10px 12px 10px 0;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.qt>.th{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.qt code,.code{font:12px/1.6 ui-monospace,Menlo,monospace}
+.qt b{width:16px;height:16px;border:1px solid var(--line);display:inline-block;flex:none}
+.code{margin:0;padding:16px;border:1px solid var(--line);background:var(--stripe);overflow:auto;white-space:pre;color:var(--ink)}
+.use{font-size:14px;margin:0;padding-left:18px;line-height:1.9}
+/* links: underlined where they sit in text; plain in lists and rows */
+.u,.links a,.crumb a,.meta a,.tbl a,.md a,a.back,.wl{text-decoration:underline;text-decoration-color:var(--ctl);text-decoration-thickness:1px;text-underline-offset:3px}
+.u:hover,.links a:hover,.crumb a:hover,.meta a:hover,.tbl a:hover,.md a:hover,a.back:hover,.wl:hover{text-decoration-color:var(--accent);text-decoration-thickness:2px}
+/* keyboard focus: always visible */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.field input:focus-visible{outline:none}
+/* reading: the note is 68ch wide, 17px */
+.md{max-width:68ch;font-size:17px;line-height:1.65}
+.md ~ .sec{max-width:680px}
+/* graph: interactive in Quartz; expand opens the full graph */
+.gwrap{position:relative}
+.gx{position:absolute;top:8px;right:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer;padding:0}
+.gx:hover{color:var(--ink);border-color:var(--ctl)}
+/* hover: every link gets the same vermillon underline */
+a:hover,a.row:hover strong,.pn a:hover strong{text-decoration-line:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:3px}
+a.row:hover,.pn a:hover{text-decoration:none}
+a.chip:hover{border-color:var(--accent);text-decoration:none}
+a.btn:hover{text-decoration:none}
+/* full graph (popover) */
+.gpop{border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:24px;width:min(880px,92vw);box-sizing:border-box;font:15px/1.55 "Inter",system-ui,sans-serif}
+.gpop::backdrop{background:rgba(0,0,0,.45)}
+.gpop-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.gpop .graph{border:0}
+</style>
+</helmet>
+<div class="page" style="min-height: 3200px">
+  <div class="wrap">
+
+    <section class="head">
+      <div class="crumb">Wireframes › Foundations</div>
+      <h1 class="h1">Design system</h1>
+      <div class="meta">One stylesheet shared by every page · black &amp; white · 1px lines only · Inter + Newsreader</div>
+    </section>
+
+    <div class="grid sec">
+      <section>
+        <span class="lbl">Color</span>
+        <div class="sw"><i style="background:#111"></i><span><strong>Ink</strong> <span class="spec">#111</span> — text, active, filled nodes</span></div>
+        <div class="sw"><i style="background:#595959"></i><span><strong>Muted</strong> <span class="spec">#595959</span> — meta, labels</span></div>
+        <div class="sw"><i style="background:#d4d4d4"></i><span><strong>Control</strong> <span class="spec">#d4d4d4</span> — field, chip borders</span></div>
+        <div class="sw"><i style="background:#e5e5e5"></i><span><strong>Line</strong> <span class="spec">#e5e5e5</span> — dividers, rows</span></div>
+        <div class="sw"><i style="background:#fff"></i><span><strong>Paper</strong> <span class="spec">#fff</span></span></div>
+        <div class="sw"><i style="background:#E34234"></i><span><strong>Accent · Vermillon</strong> <span class="spec">#E34234 · dark #FF6A4D</span> — progress, current item, hover, focus only</span></div>
+      </section>
+      <section>
+        <span class="lbl">Type · Inter + Newsreader</span>
+        <div class="h1" style="margin: 0 0 8px">Title 48 · Newsreader 500</div>
+        <div style="font-size: 17px; font-weight: 700">Row title 17</div>
+        <div style="font-size: 15px">Body 15 / 1.55</div>
+        <div style="font-size: 14px">UI text 14 — lists, links, controls</div>
+        <div class="muted" style="font-size: 13px">Meta 13 — breadcrumb, counts, dates</div>
+        <span class="lbl" style="margin: 4px 0 0">Label 12 · uppercase</span>
+      </section>
+      <section>
+        <span class="lbl">Spacing · 8 grid</span>
+        <div class="sp"><i style="width:8px"></i>8 — inside chips, lists</div>
+        <div class="sp"><i style="width:16px"></i>16 — related items</div>
+        <div class="sp"><i style="width:24px"></i>24 — controls → list</div>
+        <div class="sp"><i style="width:48px"></i>48 — between sections</div>
+        <div class="sp"><i style="width:64px"></i>64 — main ↔ rail</div>
+        <div class="spec" style="margin-top: 12px">page 1200 max · padding 48 / 32 · rail 280 sticky</div>
+      </section>
+    </div>
+
+    <div class="grid">
+      <section>
+        <span class="lbl">Rows</span>
+        <div class="rows">
+          <a href="#" class="row"><strong>5 · Link Layer</strong><small>11 concepts · 4 opened →</small></a>
+          <a href="#" class="row"><strong>Browse all 104 concepts</strong><small>→</small></a>
+        </div>
+        <div class="spec" style="margin-top: 8px">chapters, recent updates, glossary entry</div>
+      </section>
+      <section>
+        <span class="lbl">Chips</span>
+        <div class="chips"><a href="#" class="chip">✓ Error Detection</a><a href="#" class="chip">○ CSMA-CA</a><span class="chip muted">+ 8</span></div>
+        <div class="spec" style="margin: 8px 0 24px">topics, concepts, backlinks · ✓ opened · ○ not yet</div>
+        <span class="lbl">Button · progress</span>
+        <a href="#" class="btn">Continue →</a>
+        <div class="bar" style="margin-top: 16px; max-width: 240px"><i style="width: 36%"></i></div>
+      </section>
+      <section>
+        <span class="lbl">Fields</span>
+        <label class="field" style="width: 100%"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><input type="search" placeholder="Search" aria-label="Search notes"><span class="kbd">Ctrl K</span></label>
+        <div class="controls" style="margin: 12px 0 0">
+          <label class="field" style="flex: 1 1 120px">Filter<input type="text" placeholder="type…"></label>
+          <label class="check"><input type="checkbox">Not opened yet</label>
+        </div>
+        <span class="lbl" style="margin-top: 24px">Links</span>
+        <p style="font-size: 14px; margin: 0 0 12px">Text with an <a href="#" class="u">underlined link</a> inside.</p>
+        <a href="#" class="back">← Back to parent</a>
+      </section>
+    </div>
+
+    <section class="sec">
+      <span class="lbl">Rules</span>
+      <ul class="use" style="columns: 2 360px; column-gap: 64px">
+        <li><strong>Reading width</strong> — the note is max 68ch, 17px / 1.65; UI around it stays 13–15px</li>
+        <li><strong>Links</strong> — underlined (1px, control gray) in text, breadcrumb, rail, tables; plain in A–Z lists, rows, chips; hover = 2px vermillon</li>
+        <li><strong>Focus</strong> — every interactive element: 2px vermillon outline, 2px offset, keyboard only</li>
+        <li><strong>Progress wording</strong> — “opened” (a note was opened at least once), never “read”</li>
+        <li><strong>Status</strong> — frontmatter status is plain meta text (“Draft · updated …”), never a chip</li>
+        <li><strong>Back</strong> — always a real parent (breadcrumb / back link), never browser history</li>
+        <li><strong>Graph</strong> — static preview in the rail; interactive in Quartz, with an expand button (top right) for the full graph</li>
+        <li><strong>Theme</strong> — follows the device (prefers-color-scheme) until the switch is used; Quartz stores it as <code>saved-theme</code></li>
+      </ul>
+    </section>
+
+    <section class="sec" style="margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--line)">
+      <span class="lbl">Quartz implementation</span>
+      <h2 style="font-family: Newsreader, Georgia, serif; font-weight: 500; font-size: 32px; letter-spacing: -.01em; margin: 0 0 8px">From these tokens to Quartz</h2>
+      <p class="muted" style="margin: 0 0 32px; max-width: 760px; font-size: 14px">Quartz takes a fixed 9-color palette in <code>quartz.config.ts</code> (one set per mode). Its default uses <code>secondary</code> for every link, so putting vermillon there would color the whole site. Instead: <strong>secondary = ink</strong>, <strong>tertiary = vermillon</strong>, and a few <code>custom.scss</code> rules for what the palette can't express.</p>
+      <div class="qt">
+        <div class="th">Quartz key</div><div class="th">Role in this design</div><div class="th">Light</div><div class="th">Dark</div>
+        <div><code>light</code></div><div>Page background</div><div><b style="background:#ffffff"></b><code>#ffffff</code></div><div><b style="background:#141414"></b><code>#141414</code></div><div><code>lightgray</code></div><div>Dividers, rows, borders</div><div><b style="background:#e5e5e5"></b><code>#e5e5e5</code></div><div><b style="background:#2a2a2a"></b><code>#2a2a2a</code></div><div><code>gray</code></div><div>Meta text, graph edges</div><div><b style="background:#595959"></b><code>#595959</code></div><div><b style="background:#9a9a9a"></b><code>#9a9a9a</code></div><div><code>darkgray</code></div><div>Body text</div><div><b style="background:#111111"></b><code>#111111</code></div><div><b style="background:#ededed"></b><code>#ededed</code></div><div><code>dark</code></div><div>Titles, icons</div><div><b style="background:#111111"></b><code>#111111</code></div><div><b style="background:#ededed"></b><code>#ededed</code></div><div><code>secondary</code></div><div>Links, breadcrumb, explorer, graph nodes → ink, not color</div><div><b style="background:#111111"></b><code>#111111</code></div><div><b style="background:#ededed"></b><code>#ededed</code></div><div><code>tertiary</code></div><div>Accent: hover, active graph node</div><div><b style="background:#E34234"></b><code>#E34234</code></div><div><b style="background:#FF6A4D"></b><code>#FF6A4D</code></div><div><code>highlight</code></div><div>Internal-link background → none</div><div><b style="background:transparent"></b><code>transparent</code></div><div><b style="background:transparent"></b><code>transparent</code></div><div><code>textHighlight</code></div><div>==highlight== in notes</div><div><b style="background:rgba(227,66,52,.16)"></b><code>rgba(227,66,52,.16)</code></div><div><b style="background:rgba(255,106,77,.22)"></b><code>rgba(255,106,77,.22)</code></div>
+      </div>
+    </section>
+
+    <div class="grid sec">
+      <section>
+        <span class="lbl">quartz.config.ts → configuration.theme</span>
+        <pre class="code">theme: {
+  fontOrigin: &quot;googleFonts&quot;,
+  cdnCaching: true,
+  typography: {
+    header: &quot;Newsreader&quot;,
+    body: &quot;Inter&quot;,
+    code: &quot;IBM Plex Mono&quot;,
+  },
+  colors: {
+    lightMode: {
+      light: &quot;#ffffff&quot;,
+      lightgray: &quot;#e5e5e5&quot;,
+      gray: &quot;#595959&quot;,
+      darkgray: &quot;#111111&quot;,
+      dark: &quot;#111111&quot;,
+      secondary: &quot;#111111&quot;,
+      tertiary: &quot;#E34234&quot;,
+      highlight: &quot;transparent&quot;,
+      textHighlight: &quot;rgba(227, 66, 52, 0.16)&quot;,
+    },
+    darkMode: {
+      light: &quot;#141414&quot;,
+      lightgray: &quot;#2a2a2a&quot;,
+      gray: &quot;#9a9a9a&quot;,
+      darkgray: &quot;#ededed&quot;,
+      dark: &quot;#ededed&quot;,
+      secondary: &quot;#ededed&quot;,
+      tertiary: &quot;#FF6A4D&quot;,
+      highlight: &quot;transparent&quot;,
+      textHighlight: &quot;rgba(255, 106, 77, 0.22)&quot;,
+    },
+  },
+},</pre>
+      </section>
+      <section>
+        <span class="lbl">quartz/styles/custom.scss</span>
+        <pre class="code">// quartz/styles/custom.scss — what the palette can&#x27;t express
+:root { --accent: #E34234; --ctl: #d4d4d4; }
+:root[saved-theme=&quot;dark&quot;] { --accent: #FF6A4D; --ctl: #3d3d3d; }
+
+// links are ink; the accent only shows on hover
+a.internal { background: none; text-decoration: underline;
+  text-decoration-color: var(--lightgray); text-underline-offset: 3px; }
+a:hover { color: var(--dark); text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px; }
+
+// titles: Newsreader 500, 48px
+h1.article-title { font-weight: 500; font-size: 48px;
+  letter-spacing: -.015em; line-height: 1.1; }
+
+// accent, used sparingly
+.progress &gt; i, .continue-dot { background: var(--accent); }
+.toc a.in-view { border-left: 2px solid var(--accent); }
+input:focus, select:focus { outline: none; border-color: var(--accent); }
+
+// 1px lines only, no radius except chips
+.search &gt; .search-button, input, select { border: 1px solid var(--ctl);
+  border-radius: 0; }</pre>
+        <span class="lbl" style="margin-top: 32px">Accent budget per page</span>
+        <ul class="use">
+          <li>Progress bar fill (Home table, Course, Chapter)</li>
+          <li>Dot before the last opened note (Home)</li>
+          <li>Active heading in “On this page” (Chapter, Concept)</li>
+          <li>Hover underline &amp; chip border · keyboard focus outline</li>
+          <li>Active node in the graph (Quartz <code>tertiary</code>)</li>
+        </ul>
+        <p class="muted" style="font-size: 13px; margin: 16px 0 0">Never: text color, backgrounds, headings, buttons, read marks.</p>
+      </section>
+    </div>
+
+    <footer class="foot">
+      <span>Course notes · built with Quartz</span>
+      <label class="tgl" title="Light / dark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><input type="checkbox" aria-label="Dark mode"><span class="tr"><i></i></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></label>
+    </footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3200}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
