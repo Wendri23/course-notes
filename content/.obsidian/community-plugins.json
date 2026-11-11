@@ -3,5 +3,6 @@
   "find-unlinked-files",
   "templater-obsidian",
   "dataview",
-  "obsidian-excalidraw-plugin"
+  "obsidian-excalidraw-plugin",
+  "obsidian-git"
 ]
