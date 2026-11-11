@@ -1,9 +1,10 @@
 // Course graph: d3-force + SVG. Filled = opened (or course/chapter), hollow = not yet, accent = current page.
 // Data comes from contentIndex.json (fetchData), extended by course-context (entry.courseNotes).
 ;(() => {
-  const D3_URL = "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm"
+  // minimal d3 build (selection, force, zoom, drag, transition) served by the site: one small file
   let d3p
-  const loadD3 = () => (d3p ??= import(D3_URL))
+  const loadD3 = (root) => (d3p ??= import(new URL(root + "/static/d3-graph.js", window.location.href).href))
+  const idle = () => new Promise((r) => (window.requestIdleCallback ? requestIdleCallback(() => r(), { timeout: 800 }) : setTimeout(r, 120)))
 
   const simplify = (s) => {
     if (!s) return ""
@@ -57,7 +58,7 @@
 
   /** Renders a force graph into `el`; returns a cleanup function. */
   async function render(el, { data, nodeIds, current, root, global, onNavigate }) {
-    const d3 = await loadD3()
+    const d3 = await loadD3(root)
     el.replaceChildren()
     const width = el.clientWidth || 300
     const height = el.clientHeight || 250
@@ -105,16 +106,22 @@
       .force("collide", d3.forceCollide().radius((d) => d.r + (global ? 8 : 4)))
       .force("x", d3.forceX().strength(global ? 0.03 : 0.08))
       .force("y", d3.forceY().strength(global ? 0.03 : 0.08))
-      .alphaDecay(global ? 0.035 : 0.0228)
+      .alphaDecay(global ? 0.035 : 0.05)
+      .stop()
     if (current && byId.has(current)) {
       const c = byId.get(current)
       c.fx = 0
       c.fy = 0
     }
-    sim.on("tick", () => {
+    // lay the graph out off-screen, then draw it once (no animated settling on every page)
+    const ticks = Math.min(300, Math.ceil(Math.log(sim.alphaMin()) / Math.log(1 - sim.alphaDecay())))
+    for (let i = 0; i < ticks; i++) sim.tick()
+    const draw = () => {
       link.attr("x1", (d) => d.source.x).attr("y1", (d) => d.source.y).attr("x2", (d) => d.target.x).attr("y2", (d) => d.target.y)
       node.attr("transform", (d) => `translate(${d.x},${d.y})`)
-    })
+    }
+    draw()
+    sim.on("tick", draw)
 
     // hover: highlight neighbours
     node
@@ -165,13 +172,13 @@
         svg.classed("zoomed", e.transform.k > 1.6)
       })
     svg.call(zoom)
-    const fit = () => {
+    const fit = (animate = true) => {
       const b = g.node().getBBox()
       if (!b.width) return
       const k = Math.min(2, 0.9 / Math.max(b.width / width, b.height / height))
-      svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.scale(k).translate(-(b.x + b.width / 2), -(b.y + b.height / 2)))
+      ;(animate ? svg.transition().duration(500) : svg).call(zoom.transform, d3.zoomIdentity.scale(k).translate(-(b.x + b.width / 2), -(b.y + b.height / 2)))
     }
-    if (global) sim.on("end.fit", fit)
+    if (global) fit(false)
 
     return {
       stats: { nodes: nodes.length, links: links.length },
@@ -229,6 +236,7 @@
 
     let localGraph
     try {
+      await idle()
       localGraph = await render(local, { data, nodeIds: localIds(data, current), current, root, global: false })
     } catch (err) {
       local.textContent = "Graph could not load."

@@ -1,0 +1,23 @@
+{
+  "name": "latex-lazy",
+  "version": "1.0.0",
+  "description": "Course notes: KaTeX math, with its stylesheet and copy script loaded only on pages that contain math",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": { "import": "./dist/index.js" },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "quartz": {
+    "name": "latex-lazy",
+    "displayName": "LaTeX (lazy assets)",
+    "category": "transformer",
+    "version": "1.0.0",
+    "quartzVersion": ">=5.1.0",
+    "defaultOrder": 80,
+    "defaultEnabled": true,
+    "defaultOptions": { "renderEngine": "katex" },
+    "optionSchema": { "renderEngine": { "type": "enum", "values": ["katex"] }, "katexOptions": { "type": "object" }, "customMacros": { "type": "object" } }
+  }
+}

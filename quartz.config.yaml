@@ -14,11 +14,21 @@ configuration:
     - "**/.obsidian"
   theme:
     fontOrigin: googleFonts
+    # Google Fonts serves small woff2 subsets; Quartz's self-hosting would ship full TTF files (1.5 MB)
     cdnCaching: true
     typography:
-      header: Newsreader
-      body: Inter
-      code: IBM Plex Mono
+      header:
+        name: Newsreader
+        weights: [400]
+        includeItalic: false
+      body:
+        name: Inter
+        weights: [400, 600]
+        includeItalic: true
+      code:
+        name: IBM Plex Mono
+        weights: [400]
+        includeItalic: false
     colors:
       lightMode:
         light: "#ffffff"
@@ -91,6 +101,12 @@ plugins:
     enabled: true
     order: 70
   - source: "@quartz-community/latex"
+    enabled: false
+    options:
+      renderEngine: katex
+    order: 80
+  # same KaTeX rendering, but its CSS/JS are only loaded on pages with math
+  - source: ./plugins/latex-lazy
     enabled: true
     options:
       renderEngine: katex
