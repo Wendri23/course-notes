@@ -1,5 +1,5 @@
 ---
-title: Network
+title: reseau
 type: course
 course: Network
 aliases: [Network]
@@ -7,16 +7,6 @@ color: "#0f766e"
 description: "From the Internet's edge down to the link layer, plus the cryptography that secures it."
 created: 2026-11-10
 ---
-## Chapters
-| # | Chapter | Topic |
-|---|---|---|
-| 1 | [[Computer Networks and the Internet]] | overview : edge, core, access, delays, layers |
-| 2 | [[Cryptography Basics]] | symmetric / public key, hash, certificates |
-| 3 | [[Application Layer]] | HTTP, DNS, FTP, e-mail, CDN, P2P |
-| 4 | [[Transport Layer]] | UDP, TCP, reliability, flow and congestion control |
-| 5 | [[Network Layer]] | IP, addressing, NAT, routing (LS / DV), RIP, OSPF, BGP |
-| 6 | [[Link Layer]] | error detection, multiple access, ARP, Ethernet, switches |
-
 ## Course map
 ```mermaid
 flowchart TD
