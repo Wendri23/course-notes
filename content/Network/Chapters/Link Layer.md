@@ -39,6 +39,7 @@ Parity (odd errors), 2D parity (corrects one bit = FEC), checksum (weak, softwar
 
 ## 3. Multiple access protocols
 Shared broadcast link → collisions. Three families :
+
 | Family | Examples | Note |
 |---|---|---|
 | Channel partitioning | TDMA, FDMA, CDMA | good at high load |

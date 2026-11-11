@@ -30,6 +30,7 @@ Example : O/S = 15 segments → windows 1 + 2 + 4 + 8 → K = 4, Q = 2 → P = 2
 
 ## When does slow start hurt?
 $$\frac{Latency}{Minimum\ latency} \leq 1 + \frac{P}{(O/R)/RTT + 2}$$
+
 | Slow start costs little | Slow start costs a lot |
 |---|---|
 | RTT ≪ O/R (big object, short RTT) | large RTT and **small** object (typical web page) |

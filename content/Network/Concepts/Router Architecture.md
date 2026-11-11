@@ -57,6 +57,7 @@ RP -.-> I2
 
 ## Random Early Detection (RED)
 Drop **before** the buffer is full, to signal congestion early to TCP sources.
+
 | Average queue size | Action |
 |---|---|
 | < min_th | no drop |

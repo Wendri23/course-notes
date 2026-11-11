@@ -24,6 +24,7 @@ Protocol / next header values : 6 TCP, 17 UDP, 50/51 IPsec, 58 ICMPv6, 89 OSPF.
 
 ## Review question : overhead
 40 bytes of data every 20 ms, in TCP (20 B header) then IP :
+
 | | Header bytes | Datagram | Overhead | Data |
 |---|---|---|---|---|
 | IPv4 | 20 + 20 = 40 | 80 B | **50 %** | 50 % |

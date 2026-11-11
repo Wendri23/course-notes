@@ -9,6 +9,7 @@ created: 2026-11-11
 ---
 ## Why hierarchical routing?
 The ideal study assumed identical routers and a "flat" network. Not true :
+
 | Issue | Problem |
 |---|---|
 | **Scalability** | millions of destinations : can't store them all, table exchanges would swamp the links |

@@ -7,8 +7,8 @@
 }
 .course-graph .cg-expand:hover { color: var(--accent); border-color: var(--accent-line); background: var(--accent-soft); }
 .course-graph .cg-local { height: 250px; overflow: hidden; position: relative; }
-.course-graph svg.cg-svg { width: 100%; height: 100%; display: block; cursor: grab; }
-.course-graph svg.cg-svg:active { cursor: grabbing; }
+svg.cg-svg { width: 100%; height: 100%; display: block; cursor: grab; }
+svg.cg-svg:active { cursor: grabbing; }
 .cg-svg .cg-link { stroke: color-mix(in oklab, var(--gray) 45%, transparent); stroke-width: 1; }
 .cg-svg .cg-link.hot { stroke: var(--accent); stroke-width: 1.6; }
 .cg-svg .cg-node circle { stroke: var(--light); stroke-width: 1.5; cursor: pointer; transition: opacity .15s; }

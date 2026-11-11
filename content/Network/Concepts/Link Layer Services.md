@@ -18,6 +18,7 @@ Link layer = move a datagram from one node to an **adjacent** node over a link.
 A datagram crosses **different links with different protocols** (e.g. EPON → Ethernet → WiFi), each with its own services.
 
 Analogy (trip Princeton → Lausanne) :
+
 | Trip | Network |
 |---|---|
 | tourist | datagram |

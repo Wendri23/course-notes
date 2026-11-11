@@ -223,12 +223,18 @@
     }
 
     let globalGraph
+    // The sidebar is its own stacking context, so the modal is moved to <body> while open
+    // (otherwise the left sidebar paints over it).
     const close = () => {
       modal.hidden = true
       globalGraph?.cleanup()
       globalGraph = undefined
+      if (modal.parentElement !== box) box.append(modal)
+      document.documentElement.style.overflow = ""
     }
     const open = async () => {
+      document.body.append(modal)
+      document.documentElement.style.overflow = "hidden"
       modal.hidden = false
       chips.replaceChildren()
       const all = document.createElement("button")
@@ -246,7 +252,7 @@
         b.append(course)
         chips.append(b)
       }
-      globalGraph = await render(box.querySelector(".cg-global"), {
+      globalGraph = await render(modal.querySelector(".cg-global"), {
         data,
         nodeIds: new Set(data.nodes.keys()),
         current,

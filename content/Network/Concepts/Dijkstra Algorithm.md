@@ -58,6 +58,7 @@ E ---|2| F
 
 ## Resulting forwarding table of A
 Follow the predecessors back until the first hop :
+
 | Destination | Cost | Path | Next hop |
 |---|---|---|---|
 | B | 2 | A-B | B |

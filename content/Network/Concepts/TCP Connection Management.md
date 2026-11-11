@@ -54,6 +54,7 @@ LAST_ACK --> CLOSED : rcv ACK
 
 ## TIME_WAIT (2MSL wait)
 **MSL** = Maximum Segment Lifetime (30–120 s).
+
 | Why wait | Side effect |
 |---|---|
 | resend the last ACK if it was lost | the socket 4-tuple can't be reused (issue for busy servers) |

@@ -21,6 +21,7 @@ Networks are complex (hosts, routers, links, apps, protocols, HW, SW) → organi
 
 ## Encapsulation
 Each layer takes data from above, **adds a header**, and passes the new unit (PDU) to the layer below.
+
 | Layer | Unit | Content |
 |---|---|---|
 | Application | message | `M` |

@@ -18,6 +18,7 @@ Users coexist with minimal interference if the codes are **orthogonal** : the ot
 
 ## Example (general knowledge, slides are figures)
 Codes of length 4 : user 1 = (1, 1, −1, −1), user 2 = (1, −1, 1, −1) → orthogonal (inner product = 0).
+
 | | Chips |
 |---|---|
 | User 1 sends bit 1 | (1, 1, −1, −1) |
