@@ -1,0 +1,26 @@
+{
+  "name": "diagram-viewer",
+  "version": "1.0.0",
+  "description": "Course notes: click a Mermaid diagram to open it fullscreen, wheel to zoom, drag to pan, Esc to close",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": { "import": "./dist/index.js" },
+    "./components": { "import": "./dist/components/index.js" },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "peerDependencies": { "preact": "^10.0.0" },
+  "quartz": {
+    "name": "diagram-viewer",
+    "displayName": "Diagram Viewer",
+    "category": ["component"],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.1.0",
+    "defaultEnabled": true,
+    "defaultOptions": {},
+    "components": {
+      "DiagramViewer": { "displayName": "Diagram Viewer", "defaultPosition": "afterBody", "defaultPriority": 90 }
+    }
+  }
+}

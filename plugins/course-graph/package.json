@@ -1,0 +1,26 @@
+{
+  "name": "course-graph",
+  "version": "1.0.0",
+  "description": "Course notes: graph view with nodes coloured by course, sized by type, and course filter chips",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": { "import": "./dist/index.js" },
+    "./components": { "import": "./dist/components/index.js" },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "peerDependencies": { "preact": "^10.0.0" },
+  "quartz": {
+    "name": "course-graph",
+    "displayName": "Course Graph",
+    "category": ["component"],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.1.0",
+    "defaultEnabled": true,
+    "defaultOptions": {},
+    "components": {
+      "CourseGraph": { "displayName": "Course Graph", "defaultPosition": "right", "defaultPriority": 10 }
+    }
+  }
+}

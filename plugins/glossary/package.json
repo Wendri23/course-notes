@@ -1,0 +1,25 @@
+{
+  "name": "glossary",
+  "version": "1.0.0",
+  "description": "Course notes: /glossary page listing every concept and alias across courses, A to Z",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": { "import": "./dist/index.js" },
+    "./components": { "import": "./dist/components/index.js" },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "peerDependencies": { "preact": "^10.0.0" },
+  "quartz": {
+    "name": "glossary",
+    "displayName": "Glossary",
+    "category": ["pageType"],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.1.0",
+    "defaultOrder": 50,
+    "defaultEnabled": true,
+    "defaultOptions": { "slug": "glossary", "title": "Glossary" },
+    "optionSchema": { "slug": { "type": "string" }, "title": { "type": "string" } }
+  }
+}

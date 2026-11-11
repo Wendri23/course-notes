@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "plugins": {
+    "course-context": {
+      "source": "./plugins/course-context",
+      "resolved": "C:\\Users\\plene\\Documents\\course-notes\\plugins\\course-context",
+      "commit": "local",
+      "installedAt": "2026-11-11T12:22:14.671Z"
+    },
+    "course-dashboard": {
+      "source": "./plugins/course-dashboard",
+      "resolved": "C:\\Users\\plene\\Documents\\course-notes\\plugins\\course-dashboard",
+      "commit": "local",
+      "installedAt": "2026-11-11T12:28:18.512Z"
+    },
+    "course-graph": {
+      "source": "./plugins/course-graph",
+      "resolved": "C:\\Users\\plene\\Documents\\course-notes\\plugins\\course-graph",
+      "commit": "local",
+      "installedAt": "2026-11-11T12:28:33.399Z"
+    },
+    "diagram-viewer": {
+      "source": "./plugins/diagram-viewer",
+      "resolved": "C:\\Users\\plene\\Documents\\course-notes\\plugins\\diagram-viewer",
+      "commit": "local",
+      "installedAt": "2026-11-11T12:28:29.812Z"
+    },
+    "glossary": {
+      "source": "./plugins/glossary",
+      "resolved": "C:\\Users\\plene\\Documents\\course-notes\\plugins\\glossary",
+      "commit": "local",
+      "installedAt": "2026-11-11T12:28:26.173Z"
+    },
+    "learning-path": {
+      "source": "./plugins/learning-path",
+      "resolved": "C:\\Users\\plene\\Documents\\course-notes\\plugins\\learning-path",
+      "commit": "local",
+      "installedAt": "2026-11-11T12:28:22.282Z"
+    }
+  }
+}

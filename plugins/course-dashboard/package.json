@@ -1,0 +1,26 @@
+{
+  "name": "course-dashboard",
+  "version": "1.0.0",
+  "description": "Course notes: home dashboard with one card per course, progress, recent notes and topics",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": { "import": "./dist/index.js" },
+    "./components": { "import": "./dist/components/index.js" },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "peerDependencies": { "preact": "^10.0.0" },
+  "quartz": {
+    "name": "course-dashboard",
+    "displayName": "Course Dashboard",
+    "category": ["component"],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.1.0",
+    "defaultEnabled": true,
+    "defaultOptions": {},
+    "components": {
+      "CourseDashboard": { "displayName": "Course Dashboard", "defaultPosition": "afterBody", "defaultPriority": 5 }
+    }
+  }
+}

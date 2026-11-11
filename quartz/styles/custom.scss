@@ -1,3 +1,268 @@
 @use "./variables.scss" as *;
 
-// put your custom CSS here!
+// ─────────────────────────────────────────────────────────────
+// Course notes — "study" theme
+// Each course has an accent colour (frontmatter `color` on its index.md).
+// The CourseBadge component sets --course-accent for the current page;
+// everything below derives from it. `html:root` beats Quartz's `:root` vars.
+// ─────────────────────────────────────────────────────────────
+
+html:root {
+  --default-accent: #0f766e;
+  --course-accent: var(--default-accent);
+  --accent: var(--course-accent);
+  --accent-soft: color-mix(in oklab, var(--accent) 10%, var(--light));
+  --accent-line: color-mix(in oklab, var(--accent) 28%, var(--light));
+  --secondary: var(--accent);
+  --tertiary: color-mix(in oklab, var(--accent) 70%, #c2410c);
+  --highlight: color-mix(in oklab, var(--accent) 8%, transparent);
+  --card: #ffffff;
+  --shadow: 0 1px 2px rgb(28 25 23 / 0.04), 0 4px 16px rgb(28 25 23 / 0.06);
+  --shadow-hover: 0 2px 4px rgb(28 25 23 / 0.06), 0 12px 32px rgb(28 25 23 / 0.1);
+  --radius: 14px;
+}
+
+html:root[saved-theme="dark"] {
+  --accent: color-mix(in oklab, var(--course-accent) 55%, #ffffff);
+  --accent-soft: color-mix(in oklab, var(--accent) 14%, var(--light));
+  --accent-line: color-mix(in oklab, var(--accent) 35%, var(--light));
+  --secondary: var(--accent);
+  --tertiary: color-mix(in oklab, var(--accent) 65%, #fb923c);
+  --highlight: color-mix(in oklab, var(--accent) 12%, transparent);
+  --card: #1a1d22;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
+  --shadow-hover: 0 2px 4px rgb(0 0 0 / 0.35), 0 12px 32px rgb(0 0 0 / 0.4);
+}
+
+// ── Typography ────────────────────────────────────────────────
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+article {
+  line-height: 1.7;
+  font-size: 1.02rem;
+
+  p,
+  li {
+    color: var(--darkgray);
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+.page-title,
+.article-title {
+  font-family: var(--headerFont);
+  font-optical-sizing: auto;
+  letter-spacing: -0.01em;
+  color: var(--dark);
+}
+
+.article-title {
+  font-weight: 700;
+  font-size: 2.3rem;
+  line-height: 1.15;
+}
+
+article h2 {
+  margin-top: 2.2rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--lightgray);
+}
+
+article h2::before {
+  content: "";
+  display: inline-block;
+  width: 0.35em;
+  height: 0.9em;
+  margin-right: 0.5em;
+  border-radius: 3px;
+  background: var(--accent);
+  vertical-align: -0.05em;
+}
+
+.page-title {
+  font-size: 1.6rem;
+  a {
+    color: var(--dark);
+  }
+}
+
+strong {
+  color: var(--dark);
+}
+
+// ── Links ─────────────────────────────────────────────────────
+a.internal:not(.tag-link) {
+  background-color: transparent;
+  padding: 0;
+}
+
+article a.internal:not(.tag-link) {
+  color: var(--accent);
+  background: transparent;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-line);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  transition:
+    text-decoration-color 0.15s,
+    color 0.15s;
+
+  &:hover {
+    color: var(--tertiary);
+    text-decoration-color: currentColor;
+  }
+
+  &.broken {
+    opacity: 0.6;
+    text-decoration-style: dashed;
+  }
+}
+
+a.internal.tag-link {
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+}
+
+// ── Tables ────────────────────────────────────────────────────
+.table-container {
+  border-radius: var(--radius);
+  border: 1px solid var(--lightgray);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+  margin: 1.4rem 0;
+
+  > table {
+    margin: 0;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.93rem;
+  }
+}
+
+article table {
+  th {
+    text-align: left;
+    font-weight: 650;
+    color: var(--dark);
+    background: var(--accent-soft);
+    border-bottom: 1px solid var(--accent-line);
+    padding: 0.6rem 0.9rem;
+  }
+
+  td {
+    padding: 0.55rem 0.9rem;
+    border-bottom: 1px solid var(--lightgray);
+    vertical-align: top;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:nth-child(even) {
+    background: color-mix(in oklab, var(--lightgray) 30%, transparent);
+  }
+
+  tbody tr:hover {
+    background: var(--highlight);
+  }
+}
+
+// ── Code ──────────────────────────────────────────────────────
+pre {
+  border-radius: 12px;
+  border: 1px solid var(--lightgray);
+}
+
+p > code,
+li > code,
+td > code {
+  background: var(--accent-soft);
+  color: var(--dark);
+  border-radius: 5px;
+  padding: 0.1em 0.35em;
+  font-size: 0.88em;
+}
+
+// ── Mermaid diagrams (centered, framed) ───────────────────────
+pre:has(> code.mermaid) {
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  padding: 1.2rem 0.75rem;
+}
+
+code.mermaid {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: transparent !important;
+
+  svg {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+article img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
+}
+
+// ── Quotes & callouts ─────────────────────────────────────────
+blockquote:not(.callout) {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 10px 10px 0;
+  padding: 0.4rem 1rem;
+  margin-left: 0;
+}
+
+.callout {
+  border-radius: 12px;
+}
+
+// ── Sidebars ──────────────────────────────────────────────────
+.explorer li > a.active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+hr {
+  border-color: var(--lightgray);
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 25%, transparent);
+}
+
+// Course pages and the home page don't need the properties panel
+body:has(.course-ctx-empty) .note-properties {
+  display: none;
+}
+
+// ── Shared card style for the custom plugins ──────────────────
+.cn-card {
+  background: var(--card);
+  border: 1px solid var(--lightgray);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+@media all and ($mobile) {
+  .article-title {
+    font-size: 1.8rem;
+  }
+}

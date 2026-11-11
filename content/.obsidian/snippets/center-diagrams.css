@@ -1,0 +1,28 @@
+/* Center Mermaid diagrams (reading view and live preview) */
+.block-language-mermaid,
+.cm-preview-code-block .mermaid,
+.markdown-rendered .mermaid,
+.mermaid {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center;
+  text-align: center !important;
+  width: 100%;
+}
+
+.mermaid svg,
+.block-language-mermaid svg {
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Center embedded images too */
+.markdown-rendered img,
+.markdown-source-view .internal-embed.image-embed img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
