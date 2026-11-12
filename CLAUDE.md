@@ -113,6 +113,7 @@ Règles :
 - `aliases` : sigles, synonymes, noms alternatifs (ils alimentent le glossaire et rendent `[[RcvWindow]]` valide). Pas de variantes de casse inutiles.
 - `tags` : **1 à 3 tags `topic/*`** pris dans le vocabulaire contrôlé ci-dessous. Ne pas créer de tag sans raison (chaque tag crée une page topic).
   `topic/protocol` · `topic/architecture` · `topic/performance` · `topic/security` · `topic/routing` · `topic/cryptography` · `topic/physical` · `topic/algorithm` · `topic/addressing` · `topic/reliability` · `topic/hardware` · `topic/wireless`
+  AMSI : `topic/modelling` · `topic/uml` · `topic/requirements` · `topic/object-oriented`
 - Ne pas mettre de champ qu'aucun plugin ne lit (ex. `color:` n'est lu par rien : le site est noir & blanc).
 
 ---
@@ -193,7 +194,7 @@ DA : noir & blanc, **un seul accent vermillon** réservé à l'UI (progress, foc
 - **Gras** pour les mots-clés, *italique* pour les termes cités. **Pas de `==surlignage==`** (il utiliserait l'accent, hors budget).
 - **Pas de callouts `> [!…]`** (blocs colorés, contraires à la DA). Une remarque → blockquote simple `> …`.
 - **Tableaux** : pour toute comparaison « X vs Y » ou matrice ; ligne vide avant et après ; en-têtes courts (affichés en petites capitales).
-- **Mermaid** : `flowchart TD/LR` ou `sequenceDiagram` ; libellés courts, `<br/>` pour couper ; **pas de `style` / `classDef` / couleurs** (le thème gère le N&B et le dark mode). Un diagramme par idée ; le viewer plein écran gère les gros schémas.
+- **Mermaid** : `flowchart TD/LR` ou `sequenceDiagram` (+ `classDiagram` pour les notes UML d'AMSI, **sans `<<stéréotype>>`** : le rendu repasse le source par `innerHTML` et le mange ; écrire `class A["A {abstract}"]`) ; libellés courts, `<br/>` pour couper ; **pas de `style` / `classDef` / couleurs** (le thème gère le N&B et le dark mode). Un diagramme par idée ; le viewer plein écran gère les gros schémas.
   - ⚠️ **Un libellé (nœud ou flèche) ne commence jamais par `1. `, `- `, `* `, `+ `, `# ` ou `> `** : Mermaid lit les libellés comme du Markdown et affiche « Unsupported markdown: list ». Numéroter avec ` · ` : `C1[1 · Internet overview]`, `-- "2 · certificate" -->` (même format que les lignes Chapters du site).
 - **Maths** : `$…$` en ligne, `$$…$$` en bloc. Pas de LaTeX pour un simple nombre.
 - **Code / valeurs littérales** : `` `gaia.cs.umass.edu` ``, numéros de port, noms de champs.
