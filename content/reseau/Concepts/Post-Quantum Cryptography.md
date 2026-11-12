@@ -1,6 +1,6 @@
 ---
 type: concept
-course: Network
+course: Reseau
 status: draft
 source: "[[Cryptography Basics]]"
 tags: [topic/cryptography]

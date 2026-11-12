@@ -1,6 +1,6 @@
 ---
 type: concept
-course: Network
+course: Reseau
 status: draft
 source: "[[Cryptography Basics]]"
 tags: [topic/security]
@@ -16,10 +16,10 @@ Trusted third party binding a **public key to an identity**.
 
 ```mermaid
 flowchart LR
-B[Bob] -- "1. proof of identity + K_B+" --> CA[CA]
-CA -- "2. certificate signed with K_CA-" --> B
-B -- "3. certificate" --> A[Alice]
-A -- "4. verify with K_CA+" --> K["✔ Bob's public key K_B+"]
+B[Bob] -- "1 · proof of identity + K_B+" --> CA[CA]
+CA -- "2 · certificate signed with K_CA-" --> B
+B -- "3 · certificate" --> A[Alice]
+A -- "4 · verify with K_CA+" --> K["✔ Bob's public key K_B+"]
 ```
 
 ## Public Key Infrastructure (PKI)

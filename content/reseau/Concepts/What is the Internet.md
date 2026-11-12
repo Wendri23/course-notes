@@ -1,6 +1,6 @@
 ---
 type: concept
-course: Network
+course: Reseau
 status: to-review
 source: "[[Computer Networks and the Internet]]"
 tags: [topic/architecture]
@@ -27,5 +27,4 @@ created: 2026-11-10
 - E2E paradigm : intelligence and control placed at the edge of the network, not in the core
 - → no longer true today, but hard to change (**ossification**)
 
----
 **Links** : [[What is a Protocol]] [[The Network edge]]

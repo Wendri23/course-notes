@@ -64,6 +64,6 @@ if (type === "chapter") {
 await tp.file.move(`/${course}/${type === "chapter" ? "Chapters" : "Concepts"}/${title}`);
 tR += "---\n" + fm.join("\n") + "\n---\n";
 tR += type === "chapter"
-  ? "# " + title + "\n\n## Outline\n\n## Review questions\n\n**Links** : [[" + course + "]]\n"
-  : "\n\n**Links** : \n";
+  ? "## 1. \n- [[]] : \n\n## Review questions\n- ? → [[]] ()\n"
+  : "**" + (aliases[0] ?? title) + "** : \n\n**Links** : \n";
 %>

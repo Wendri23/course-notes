@@ -1,19 +1,10 @@
 ---
 type: chapter
-course: Network
+course: Reseau
 chapter: 3
 status: draft
 tags: [topic/protocol, topic/architecture]
 created: 2026-11-11
----
-## Outline
-1. Principles of application layer protocols
-2. Web browsing and HTTP
-3. Domain name resolution (DNS)
-4. File transfer (FTP)
-5. Electronic mail : SMTP, POP3, IMAP
-6. Content distribution : Web caching, CDN, P2P
-
 ---
 ## 1. Principles of application layer protocols
 - [[Application Layer Protocol]] : process, user agent, what a protocol defines, client-server
@@ -67,13 +58,9 @@ created: 2026-11-11
 | Centralised vs decentralised | DNS hierarchy, P2P architectures |
 | Complexity at the edge | DNS is a core function but runs at the application layer |
 
----
 ## Review questions
 - An app with no data loss **and** highly time-sensitive? → [[App Transport Requirements]] (e.g. remote surgery, online trading)
 - Header lines of an e-mail with an Excel attachment? → [[MIME]]
 - Roles of local vs authoritative name server? → [[DNS]]
 - What is an overlay network in P2P? → [[Peer-to-Peer]]
 - Why does a TCP server need more sockets than a UDP server? → [[Socket]]
-
----
-**Links** : [[Computer Networks and the Internet]] [[Cryptography Basics]]

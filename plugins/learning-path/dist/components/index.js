@@ -6,7 +6,7 @@ import { azList, noteChip } from "../../../course-context/dist/ui.js"
  * Sections around the note (main column), fed by frontmatter, folders and links only:
  *   course  → Chapters rows + "Browse all N concepts"
  *   chapter → Concepts in this chapter (chips ✓/○) + previous / next chapter
- *   concept → Related concepts (outgoing) + Mentioned in (backlinks)
+ *   concept → Related concepts (outgoing links, text + **Links** line) + Mentioned in (backlinks)
  *   topic   → A–Z list of the concepts carrying the tag
  * Every section is hidden when empty.
  */
@@ -58,6 +58,8 @@ export const LearningPath = () => {
     }
 
     if (kind === "concept") {
+      // Related concepts = every concept the note links to, in the text and in its "**Links** :" line
+      // (that line is tagged cn-links by course-context and hidden by CSS, so it is not shown twice).
       const me = key(fileData)
       const related = []
       const seen = new Set([me])

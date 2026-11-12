@@ -1,21 +1,10 @@
 ---
 type: chapter
-course: Network
+course: Reseau
 chapter: 1
 status: draft
 tags: [topic/architecture, topic/performance, topic/physical]
 created: 2026-11-10
----
-## Outline
-1. What is the Internet?
-2. Network edge
-3. Network core
-4. Network access and physical media
-5. Internet structure and ISPs
-6. Delay and packet loss
-7. Protocol layers, service models
-8. History
-
 ---
 ## 1. What is the Internet?
 - [[What is the Internet]] : *nuts and bolts* view (devices, links, routers, protocols, network of networks) + *service* view
@@ -60,7 +49,6 @@ DG --> UDP[Connectionless · UDP]
 2. Datagram vs virtual circuit
 3. Connection-oriented vs connectionless
 
----
 ## 4. Network access and physical media
 - [[Network Access]] : link end system → edge router, 3 categories
 	- Residential : dial-up (legacy) → broadband : [[xDSL]] (phone line), [[Hybrid Fiber Coax|HFC]] (cable TV, shared), [[Fiber To The x|FTTx]] (fiber, PON)
@@ -94,7 +82,6 @@ DG --> UDP[Connectionless · UDP]
 ## 8. History
 - [[Internet History]] : ARPAnet (1969) → Cerf & Kahn principles (1974) → TCP/IP (1983) → Web (90s) → cloud, SDN/NFV
 
----
 ## Review questions
 - Flow control vs congestion control? → [[The Network edge]]
 - How does connection-oriented service provide reliable transport? → [[The Network edge]]

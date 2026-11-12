@@ -296,6 +296,11 @@ article {
     margin-right: auto;
   }
 
+  // the "**Links** :" line is shown as the "Related concepts" chips under the note (learning-path)
+  p.cn-links {
+    display: none;
+  }
+
   // ✓ / ○ after links to chapters and concepts (a style, not a block)
   a.cn-lk::after {
     content: "\00a0○";

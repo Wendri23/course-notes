@@ -4,12 +4,11 @@ course:
 chapter:
 status: draft
 tags: []
+aliases: []
 created: <% tp.date.now("YYYY-MM-DD") %>
 ---
-# <% tp.file.title %>
-
-## Outline
+## 1. First section
+- [[Concept]] : key facts
 
 ## Review questions
-
-**Links** : 
+- Question? → [[Concept]] (short answer)

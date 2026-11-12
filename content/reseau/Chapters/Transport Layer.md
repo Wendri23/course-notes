@@ -1,18 +1,10 @@
 ---
 type: chapter
-course: Network
+course: Reseau
 chapter: 4
 status: draft
 tags: [topic/protocol, topic/reliability, topic/performance]
 created: 2026-11-11
----
-## Outline
-1. Transport-layer services
-2. Connection
-3. Reliability
-4. Speed matching (flow control)
-5. Congestion control
-
 ---
 ## 1. Transport-layer services
 - [[Transport Layer Services]] : logical communication between processes ; TCP, UDP, SCTP, DCCP, QUIC
@@ -29,7 +21,7 @@ created: 2026-11-11
 - [[Pipelined Protocols]] : SAW utilisation, Go-Back-N vs Selective Repeat
 - [[TCP Reliable Data Transfer]] : cumulative ACK, timeout = EstimatedRTT + 4·DevRTT, fast retransmit
 
-## 4. Speed matching
+## 4. Speed matching (flow control)
 - [[TCP Flow Control]] : RcvWindow protects the receiver's buffer
 
 ## 5. Congestion control
@@ -60,12 +52,8 @@ E --> F[Pipelining<br/>GBN / SR]
 F --> G[TCP<br/>+ flow control<br/>+ congestion control]
 ```
 
----
 ## Review questions
 - Why choose UDP rather than TCP? → [[UDP]] (no setup delay, no state, small header, no throttling)
 - Reliable transfer over UDP? → [[UDP]] (reliability added in the application, e.g. QUIC)
 - Segments with seq 90 then 110 : data in the first? ACK if the first is lost? → [[TCP Segment Structure]] (20 bytes, ACK 90)
 - How does ssthresh evolve on timeout? → [[TCP Congestion Control]] (CongWin / 2, CongWin back to 1 MSS)
-
----
-**Links** : [[Application Layer]] [[Computer Networks and the Internet]]

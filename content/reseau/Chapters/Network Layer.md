@@ -1,20 +1,12 @@
 ---
 type: chapter
-course: Network
+course: Reseau
 chapter: 5
 status: draft
 tags: [topic/routing, topic/addressing, topic/protocol]
 created: 2026-11-11
 ---
-# Network Layer and Routing
 Chapter 5 — L. Schumacher (UNamur), based on Kurose & Ross.
-
-## Outline
-1. Introduction : forwarding, routing, service models
-2. Inside a router
-3. IP : addressing, IPv6 and IPv4, IPsec, DHCP, NAT, ICMP, transition
-4. Routing principles : link state, distance vector, hierarchical routing
-5. Routing in the Internet : RIP, OSPF, BGP
 
 ```mermaid
 flowchart LR
@@ -64,22 +56,20 @@ Network = graph, find the least-cost path. **Link state** (global view, Dijkstra
 Intra-AS cares about **performance**, inter-AS about **policy**.
 
 ## Review questions
-1. What is the difference between forwarding and routing? → [[Network Layer Services]]
-2. Why does a router need to look up faster than 5 ns, and what is HOL blocking? → [[Router Architecture]]
-3. What is an IP network? What is CIDR and why did it replace classes? → [[IP Addressing]]
-4. How can an ISP advertise a single prefix for all its customers? → [[Route Aggregation]]
-5. Compare the IPv4 and IPv6 headers. → [[IPv6]]
-6. An application sends 40 bytes of data every 20 ms over TCP. What is the header overhead with IPv4 and with IPv6? → [[IPv6]] (50 % vs 60 %)
-7. Difference between AH and ESP? What is a security association? → [[IPsec]]
-8. How does host A send a datagram to a host on another network? → [[IP Forwarding]]
-9. Why is NAT controversial? → [[NAT]]
-10. How does traceroute use ICMP? → [[ICMP]] · [[Traceroute]]
-11. Why can't IPv6 be deployed in one day, and how does tunnelling work? → [[IPv4 to IPv6 Transition]]
-12. Run Dijkstra from A on the example graph. → [[Dijkstra Algorithm]]
-13. What is count to infinity, and does poisoned reverse solve it? → [[Distance Vector]]
-14. Compare link state and distance vector algorithms. → [[Routing Algorithms]]
-15. Why is routing hierarchical? What is hot potato routing? → [[Autonomous Systems]]
-16. Compare RIP and OSPF. → [[OSPF]]
-17. Why does inter-AS routing differ from intra-AS routing? → [[BGP]]
-
-**Links** : [[Transport Layer]] [[Computer Networks and the Internet]] [[Network]]
+- What is the difference between forwarding and routing? → [[Network Layer Services]]
+- Why does a router need to look up faster than 5 ns, and what is HOL blocking? → [[Router Architecture]]
+- What is an IP network? What is CIDR and why did it replace classes? → [[IP Addressing]]
+- How can an ISP advertise a single prefix for all its customers? → [[Route Aggregation]]
+- Compare the IPv4 and IPv6 headers. → [[IPv6]]
+- An application sends 40 bytes of data every 20 ms over TCP. What is the header overhead with IPv4 and with IPv6? → [[IPv6]] (50 % vs 60 %)
+- Difference between AH and ESP? What is a security association? → [[IPsec]]
+- How does host A send a datagram to a host on another network? → [[IP Forwarding]]
+- Why is NAT controversial? → [[NAT]]
+- How does traceroute use ICMP? → [[ICMP]] · [[Traceroute]]
+- Why can't IPv6 be deployed in one day, and how does tunnelling work? → [[IPv4 to IPv6 Transition]]
+- Run Dijkstra from A on the example graph. → [[Dijkstra Algorithm]]
+- What is count to infinity, and does poisoned reverse solve it? → [[Distance Vector]]
+- Compare link state and distance vector algorithms. → [[Routing Algorithms]]
+- Why is routing hierarchical? What is hot potato routing? → [[Autonomous Systems]]
+- Compare RIP and OSPF. → [[OSPF]]
+- Why does inter-AS routing differ from intra-AS routing? → [[BGP]]

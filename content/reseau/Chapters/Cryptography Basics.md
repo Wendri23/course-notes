@@ -1,18 +1,10 @@
 ---
 type: chapter
-course: Network
+course: Reseau
 chapter: 2
 status: draft
 tags: [topic/security, topic/cryptography]
 created: 2026-11-11
----
-## Outline
-1. Introduction
-2. Symmetric key encryption : DES, AES
-3. Public key encryption : RSA, ECC
-4. Hash functions
-5. Key distribution and certification
-
 ---
 ## 1. Introduction
 - Plaintext → (encryption, key) → ciphertext → (decryption, key) → plaintext
@@ -45,6 +37,3 @@ created: 2026-11-11
 - [[Person in the middle attack]] : attacker substitutes her own keys → need a Trusted Third Party
 - Symmetric → [[Key Distribution Center]] (KDC, Needham-Schroeder)
 - Public key → [[Certification Authority]] (X.509 certificates, PKI, CRL/OCSP, Belgian eID)
-
----
-**Links** : [[Computer Networks and the Internet]]

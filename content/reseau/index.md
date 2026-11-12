@@ -1,20 +1,19 @@
 ---
-title: reseau
+title: Reseau
 type: course
-course: Network
-aliases: [Network]
-color: "#0f766e"
+course: Reseau
+aliases: [Reseau]
 description: "From the Internet's edge down to the link layer, plus the cryptography that secures it."
 created: 2026-11-10
 ---
 ## Course map
 ```mermaid
 flowchart TD
-C1[1. Internet overview] --> C3[3. Application layer]
-C2[2. Cryptography] --> C3
-C3 --> C4[4. Transport layer]
-C4 --> C5[5. Network layer and routing]
-C5 --> C6[6. Link layer and LANs]
+C1[1 · Internet overview] --> C3[3 · Application layer]
+C2[2 · Cryptography] --> C3
+C3 --> C4[4 · Transport layer]
+C4 --> C5[5 · Network layer and routing]
+C5 --> C6[6 · Link layer and LANs]
 ```
 
 ## Key concepts

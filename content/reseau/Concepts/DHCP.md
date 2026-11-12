@@ -1,6 +1,6 @@
 ---
 type: concept
-course: Network
+course: Reseau
 status: draft
 source: "[[Network Layer]]"
 tags: [topic/addressing, topic/protocol]

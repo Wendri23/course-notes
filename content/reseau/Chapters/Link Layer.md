@@ -1,21 +1,12 @@
 ---
 type: chapter
-course: Network
+course: Reseau
 chapter: 6
 status: draft
 tags: [topic/protocol, topic/hardware, topic/wireless]
 created: 2026-11-11
 ---
-# Link Layer and Local Area Networks
 Chapter 6 — L. Schumacher (UNamur), based on Kurose & Ross. Last chapter of the journey down the protocol stack.
-
-## Outline
-1. Data link layer services
-2. Error detection and correction
-3. Multiple access protocols
-4. LAN addresses : Neighbour Discovery (IPv6), ARP (IPv4)
-5. Ethernet
-6. Hubs, bridges, switches and routers
 
 ```mermaid
 flowchart TD
@@ -66,24 +57,22 @@ Dominant LAN : connectionless, unreliable, CRC, CSMA/CD, Manchester encoding, 10
 → [[Link Layer Switches]]
 
 ## Review questions
-1. Two nodes start sending a frame of length L at the same time on a channel of rate R, with propagation delay t_prop. Is there a collision if t_prop < L/R? Why? → [[Random Access Protocols]]
+- Two nodes start sending a frame of length L at the same time on a channel of rate R, with propagation delay t_prop. Is there a collision if t_prop < L/R? Why? → [[Random Access Protocols]]
    Yes : each node's signal reaches the other after t_prop, while it is still transmitting (L/R > t_prop) → the frames overlap on the medium (and with CSMA/CD both detect it and abort).
-2. Would token ring be efficient on a LAN with a very large perimeter? Why? → [[Multiple Access Protocols]]
+- Would token ring be efficient on a LAN with a very large perimeter? Why? → [[Multiple Access Protocols]]
    No : the token takes a long time to go around, nodes wait (latency) and the channel sits idle.
-3. How big are the LAN, IPv4 and IPv6 address spaces? → [[MAC Address and ARP]]
+- How big are the LAN, IPv4 and IPv6 address spaces? → [[MAC Address and ARP]]
 
    | Space | Bits | Addresses |
    |---|---|---|
    | MAC | 48 | 2⁴⁸ ≈ 2.8 × 10¹⁴ |
    | IPv4 | 32 | 2³² ≈ 4.3 × 10⁹ |
    | IPv6 | 128 | 2¹²⁸ ≈ 3.4 × 10³⁸ |
-4. A 100 Mbps adapter sends an infinite stream of 1s with Manchester encoding. How many transitions per second? → [[Ethernet]]
+- A 100 Mbps adapter sends an infinite stream of 1s with Manchester encoding. How many transitions per second? → [[Ethernet]]
    One transition in the middle of every bit, plus one at every bit boundary between two 1s → **2 × 10⁸ transitions/s**.
-5. What is the difference between a checksum and a CRC? → [[Error Detection]]
-6. Why can't WiFi use collision detection, and how does RTS/CTS fix the hidden terminal problem? → [[CSMA-CA]]
-7. How does a switch learn its table, and what does it do with an unknown destination? → [[Link Layer Switches]]
-8. When should you use a switch, and when a router? → [[Link Layer Switches]]
+- What is the difference between a checksum and a CRC? → [[Error Detection]]
+- Why can't WiFi use collision detection, and how does RTS/CTS fix the hidden terminal problem? → [[CSMA-CA]]
+- How does a switch learn its table, and what does it do with an unknown destination? → [[Link Layer Switches]]
+- When should you use a switch, and when a router? → [[Link Layer Switches]]
 
-> Questions 1–4 are from the slides ; the answers and questions 5–8 are mine.
-
-**Links** : [[Network Layer]] [[Computer Networks and the Internet]] [[Network]]
+> The first four questions are from the slides ; their answers and the last four questions are mine.

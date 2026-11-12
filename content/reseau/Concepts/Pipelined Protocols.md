@@ -1,6 +1,6 @@
 ---
 type: concept
-course: Network
+course: Reseau
 status: draft
 source: "[[Transport Layer]]"
 tags: [topic/performance, topic/protocol, topic/reliability]

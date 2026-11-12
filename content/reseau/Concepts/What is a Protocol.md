@@ -1,6 +1,6 @@
 ---
 type: concept
-course: Network
+course: Reseau
 status: to-review
 source: "[[Computer Networks and the Internet]]"
 tags: [topic/architecture]
