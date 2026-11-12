@@ -122,6 +122,9 @@ plugins:
     order: 92
   - source: "@quartz-community/quartz-fonts"
     enabled: true
+    # font CSS variables only: the Google Fonts link is already added by Quartz's head
+    options:
+      fontOrigin: local
   - source: "@quartz-themes/core"
     enabled: false
     options:
