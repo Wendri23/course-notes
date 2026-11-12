@@ -15,16 +15,20 @@ export const CourseFrame = {
     const r = (C, i) => h(C, { ...componentData, key: i })
     const head = h("div", { class: "page-header" }, h("div", { class: "popover-hint" }, ...beforeBody.map(r)))
     const content = h(pageBody, componentData)
-    const after = h("div", { class: "page-footer" }, ...afterBody.map(r))
-    const rail = h("aside", { class: "cn-rail" }, ...right.map(r))
+    // components flagged `cnSlot = "end"` (the Back link) close the main column, just above the footer
+    const isEnd = (C) => C?.cnSlot === "end"
+    const after = h("div", { class: "page-footer" }, ...afterBody.filter((C) => !isEnd(C)).map(r))
+    const end = afterBody.filter(isEnd)
+    const endBlock = end.length ? h("div", { class: "cn-end" }, ...end.map(r)) : null
+    const rail = h("aside", { class: "cn-rail", id: "cn-rail" }, ...right.map(r))
 
     let body
     if (kind === "home") {
-      body = [h("div", { class: "cn-layout cn-home-top" }, h("div", { class: "cn-main" }, head, content), rail), after]
+      body = [h("div", { class: "cn-layout cn-home-top" }, h("div", { class: "cn-main" }, head, content), rail), after, endBlock]
     } else {
       // Course: chapters first, then the course index note as-is
       const main = kind === "course" ? [after, content] : [content, after]
-      body = [head, h("div", { class: "cn-layout" }, h("main", { class: "cn-main" }, ...main), rail)]
+      body = [head, h("div", { class: "cn-layout" }, h("main", { class: "cn-main" }, ...main, endBlock), rail)]
     }
     return h("div", { class: "cn-wrap", "data-kind": kind }, ...body, ...footer.map(r))
   },

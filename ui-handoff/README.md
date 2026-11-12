@@ -41,7 +41,7 @@ Redesign of the Quartz site that publishes the Obsidian course notes (vault: `co
 - **Theme:** follows the device (`prefers-color-scheme`) until the user flips the **sun/moon switch in the footer**; choice persisted (Quartz: `saved-theme`).
 
 ### Components
-`row` (title left, muted meta + → right, bottom hairline) · `chip` (pill, 13px) · `field` (40px, 1px ctl border, search has magnifier + `Ctrl K` kbd) · `btn` (filled ink, 40px — only "Continue") · `bar` (4px progress) · `lbl` (12px uppercase section label) · `links` (vertical list) · `back` (← link above a hairline) · `cols` (A–Z multi-column list with letter headers and ✓/○ marks) · `toc` (left hairline, active item in accent) · `graph` (bordered, expand button top-right → full graph) · `pn` (previous / next chapter) · footer (credit left, theme switch right).
+`row` (title left, muted meta + → right, bottom hairline) · `chip` (pill, 13px) · `field` (40px, 1px ctl border, search has magnifier + `Ctrl K` kbd) · `btn` (filled ink, 32px, 13px text — only "Continue") · `bar` (4px progress) · `lbl` (12px uppercase section label) · `links` (vertical list) · `back` (← link above a hairline) · `cols` (A–Z multi-column list with letter headers and ✓/○ marks) · `toc` (left hairline, active item in accent) · `graph` (bordered, expand button top-right → full graph) · `pn` (previous / next chapter) · footer (credit left, theme switch right).
 
 ## Pages
 

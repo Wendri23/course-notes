@@ -28,7 +28,8 @@ Plugins maison : `plugins/*` (logique commune dans `plugins/course-context/dist/
 | **Related concepts** (chips ✓/○) | `course-context` (marque la ligne, masquée en CSS) + `learning-path` (chips) | tous les liens sortants vers un concept : dans le texte **et** dans la ligne `**Links** :` |
 | **Mentioned in** | `learning-path` | backlinks (cours, chapitres, concepts) |
 | Marques ✓/○ après chaque lien interne | `course-context` (style) | liens vers chapitres et concepts |
-| ← Back to … (rail) | `course-back` | `source:` puis `course:` |
+| ← Back to … (bas de la colonne principale, avant le footer) | `course-back` | `source:` puis `course:` |
+| Bouton afficher / masquer le rail (état mémorisé, colonne centrée quand fermé) | `course-context` (PageHead) | localStorage `cn-rail` |
 | Progression / opened ✓○ | `course-context` (localStorage) | — |
 | Glossaire A–Z | `glossary` | tous les concepts + leurs `aliases:` |
 | Pages topic | `tag-page` + `learning-path` | `tags:` |

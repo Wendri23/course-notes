@@ -42,7 +42,7 @@ a.row:hover{text-decoration:none}a.row:hover strong{text-decoration:underline;te
 a.chip:hover{border-color:var(--ink);text-decoration:none}
 .links{display:flex;flex-direction:column;gap:8px;font-size:14px}
 .back{display:block;font-size:14px;padding-top:16px;border-top:1px solid var(--line)}
-.btn{display:inline-flex;align-items:center;height:40px;padding:0 16px;background:var(--ink);color:var(--bg);font-size:14px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;height:32px;padding:0 12px;background:var(--ink);color:var(--bg);font-size:13px;box-sizing:border-box}
 .btn:hover{background:var(--ink2);text-decoration:none}
 .field{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid var(--ctl);font:inherit;font-size:14px;color:var(--muted);background:var(--bg);box-sizing:border-box}
 .field input{border:0;font:inherit;color:var(--ink);flex:1;min-width:0;outline:none;background:transparent}

@@ -118,6 +118,85 @@ hr {
   display: none;
 }
 
+// Back link: closes the main column, just above the footer
+.cn-main > .cn-end {
+  margin-top: 48px;
+}
+
+// ── Rail toggle (button top-right of the page head) ───────────
+.cn-head {
+  position: relative;
+  &:has(> .cn-rail-toggle) > .crumb {
+    padding-right: 48px;
+  }
+}
+.cn-rail-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: 1px solid var(--ctl);
+  border-radius: 0;
+  color: var(--muted);
+  cursor: pointer;
+  &:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+html[data-cn-rail="closed"] .cn-rail-toggle {
+  color: var(--ink);
+}
+
+// Rail closed: head, note, sections and footer share one centred column, a bit wider than
+// the 68ch reading width since the rail's room is free.
+// The search stays in the DOM so Ctrl K keeps working; only its trigger is hidden.
+html[data-cn-rail="closed"] .cn-wrap:is(
+  [data-kind="course"],
+  [data-kind="chapter"],
+  [data-kind="concept"],
+  [data-kind="concepts"]
+) {
+  .page-header,
+  .cn-layout {
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  article,
+  .cn-sections {
+    max-width: none;
+  }
+  .cn-layout {
+    display: block;
+  }
+  .cn-rail {
+    position: absolute;
+    width: 0;
+    height: 0;
+    flex: none;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    > :not(.search):not(:has(.search)) {
+      display: none;
+    }
+    .search > .search-button {
+      display: none;
+    }
+  }
+}
+
 // Home: title + intro beside the search (static, not sticky)
 .cn-home-top {
   margin-bottom: 48px;
@@ -502,11 +581,11 @@ button.chip:hover {
 .btn {
   display: inline-flex;
   align-items: center;
-  height: 40px;
-  padding: 0 16px;
+  height: 32px;
+  padding: 0 12px;
   background: var(--ink);
   color: var(--bg);
-  font-size: 14px;
+  font-size: 13px;
   box-sizing: border-box;
   text-decoration: none;
   &:hover {
@@ -1030,6 +1109,20 @@ html body .search .result-card:hover .card-description {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+}
+
+// Rail closed: the footer follows the centred column (#quartz-body beats Quartz's base
+// `footer { min-width: 100%; margin-left: 0 }`)
+html[data-cn-rail="closed"] #quartz-body .cn-wrap:is(
+  [data-kind="course"],
+  [data-kind="chapter"],
+  [data-kind="concept"],
+  [data-kind="concepts"]
+) > footer.foot {
+  max-width: 860px;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 // ── Footer: credit left, theme switch right ───────────────────

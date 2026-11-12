@@ -11,6 +11,47 @@ const sep = () => h("span", { class: "sep", "aria-hidden": "true" }, " › ")
 /** Opened count among `files`, filled in by the client script. */
 export const openedCount = (files) => h("span", { "data-cn-of": slugList(files) }, "0")
 
+// ── Right rail toggle (state kept in this browser) ─────────────────────────
+// html[data-cn-rail="closed"] hides the rail and centres the main column (custom.scss).
+const RAIL_KEY = "cn-rail"
+const railToggle = h("button", {
+  class: "cn-rail-toggle", type: "button", "aria-controls": "cn-rail", "aria-expanded": "true",
+  title: "Hide side panel", "aria-label": "Hide side panel",
+},
+  h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": 1.75, "aria-hidden": "true" },
+    h("rect", { x: 3, y: 4, width: 18, height: 16 }),
+    h("path", { d: "M15 4v16" })))
+
+// runs in <head> before the page paints, so a closed rail never flashes open
+const railInitScript = `
+try { if (localStorage.getItem("${RAIL_KEY}") === "closed") document.documentElement.dataset.cnRail = "closed" } catch {}
+`
+
+const railToggleScript = `
+document.addEventListener("nav", () => {
+  const btn = document.querySelector(".cn-rail-toggle")
+  if (!btn) return
+  const root = document.documentElement
+  const sync = () => {
+    const closed = root.dataset.cnRail === "closed"
+    const label = closed ? "Show side panel" : "Hide side panel"
+    btn.setAttribute("aria-expanded", String(!closed))
+    btn.setAttribute("aria-label", label)
+    btn.title = label
+  }
+  const onClick = () => {
+    const closed = root.dataset.cnRail !== "closed"
+    if (closed) root.dataset.cnRail = "closed"
+    else delete root.dataset.cnRail
+    try { localStorage.setItem("${RAIL_KEY}", closed ? "closed" : "open") } catch {}
+    sync()
+  }
+  sync()
+  btn.addEventListener("click", onClick)
+  window.addCleanup?.(() => btn.removeEventListener("click", onClick))
+})
+`
+
 // ── Page head: real-parent breadcrumb, title, meta ─────────────────────────
 export const PageHead = () => {
   const PageHead = ({ fileData, allFiles }) => {
@@ -113,12 +154,15 @@ export const PageHead = () => {
       crumb = parts
     }
 
+    const hasRail = ["course", "chapter", "concept", "concepts"].includes(kind)
     return h("div", { class: "cn-head", "data-cn-track": track ?? undefined },
       crumb ? h("nav", { class: "crumb", "aria-label": "Breadcrumb" }, ...crumb.filter(Boolean)) : null,
+      hasRail ? railToggle : null,
       h("h1", { class: "h1 article-title" }, title),
       meta)
   }
-  PageHead.afterDOMLoaded = openedScript
+  PageHead.beforeDOMLoaded = railInitScript
+  PageHead.afterDOMLoaded = openedScript + railToggleScript
   return PageHead
 }
 
@@ -193,6 +237,7 @@ export const BackLink = () => {
     if (!target) return null
     return h("div", { class: "cn-back" }, h("a", { class: "back", href: href(slug, target) }, "← " + label))
   }
+  BackLink.cnSlot = "end" // the course frame puts it at the end of the main column
   return BackLink
 }
 
